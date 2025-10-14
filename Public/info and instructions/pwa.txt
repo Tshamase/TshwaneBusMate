@@ -1,0 +1,9 @@
+Progressive Web App
+- A website that works and feels like a regular App
+- can works offline, can be installed, app-like experience, no app store needed
+- can be built basic web tech uses web tech (html, css, javascript)
+
+To build one you need
+1. Web page/ website
+2. Manifest file (describes app name, icon, and theme)
+3. Service worker, a script that allows the app to work offline and load quickly

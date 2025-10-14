@@ -1,0 +1,129 @@
+<!--Driver instance-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Brooklyn 10 Driver</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+	<!--Leaflet library map styling and script-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+</head>
+
+<body>  
+	<nav class="header-bar">
+		<div class="logo">
+			<h1>TSHWANEBUSMATE</h1>
+		</div>
+	</nav>
+	<!--Legend for whether or not cerain times are active, delayed or not comming-->
+	<div class="key-table">
+		<h4>Legend</h4>
+
+		<ul>
+			<li><span class="red"></span> Not Coming</li>
+			<li><span class="green"></span> Coming</li>
+			<li><span class="orange"></span> Delayed</li>
+		</ul>
+	</div>
+
+		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
+		
+		<!--Leaflet map display-->
+		<div class="page1">
+			<div class="map">
+				<h1>Driver / Bus Page</h1>
+				<p id="status">Connecting to server...</p>
+				<h2>Brooklyn (10) Map:</h2>
+			<div id="map"></div>
+			</div>
+		</div>
+
+	<script id="points" type="text/csv">
+		lng,lat
+		28.18882,-25.74794
+		28.18242,-25.74835
+		28.1799,-25.74708
+		28.17745,-25.74721
+		28.17589,-25.74738
+		28.17223,-25.74762
+		28.16935,-25.74781
+		28.16701,-25.74796
+		28.16293,-25.74823
+		28.1619167,-25.7483056
+		28.157828,-25.748594
+		28.15448,-25.74883
+		28.1509167,-25.7490694
+		28.1477,-25.74927
+		28.14447,-25.74946
+		28.14145,-25.74967
+		28.13876,-25.74986
+		28.13271,-25.75027
+		28.12687,-25.75068
+		28.12126,-25.75109
+		28.11158,-25.75346
+		28.09329,-25.75805
+		28.090258,-25.757752
+		28.09311,-25.74957
+		28.09254,-25.74767
+		28.0911111,-25.7462778
+		28.09029,-25.74811
+		28.0900972,-25.7501111
+		28.08813,-25.75071
+		28.08621,-25.75085
+		28.0835556,-25.7510556
+		28.082,-25.7503611
+		28.0781389,-25.7496944
+		28.071838,-25.7484382
+		28.0780692,-25.7496486
+		28.0757649,-25.7498201
+		28.0725749,-25.748869
+		28.072375,-25.7462083
+		28.0742778,-25.7454306
+		28.07713,-25.74419
+		28.07928,-25.74513
+		28.08038,-25.74552
+		28.08221,-25.746
+		28.08285,-25.74513
+		28.0840694,-25.7434722
+		28.08585,-25.74327
+		28.0876111,-25.7440139
+		28.0894722,-25.744125
+		28.08984,-25.74558
+		28.0880417,-25.7462361
+		28.0892361,-25.7466528
+		28.09094,-25.74623
+		28.09266,-25.74783
+		28.09318,-25.74954
+		28.0910396,-25.7582549
+		28.09708,-25.75709
+		28.10704,-25.75455
+		28.1192222,-25.751375
+		28.12974,-25.75038
+		28.1343,-25.750024
+		28.1432,-25.74943
+		28.14951,-25.74899
+		28.15522,-25.74862
+		28.16027,-25.74829
+		28.1702,-25.74762
+		28.18048,-25.7469
+		28.181817,-25.745318
+		28.18693,-25.74495
+		28.18923,-25.74482
+		28.190601,-25.7457714
+		28.19028,-25.74786
+		28.18882,-25.74794
+	</script>
+
+	<!--Time animation legend script-->
+	<script src="legend.js"></script>
+
+	<!--Combined driver script - handles map display AND GPS sending-->
+	<script src="driver-map-and-gps.js"></script>
+	
+</body>
+</html>

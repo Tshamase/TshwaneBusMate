@@ -1,0 +1,179 @@
+/* Global reset & base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+    color: #f0f0f0;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-top: 50px; 
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Header bar */
+nav.header-bar {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 40px;
+    color: white;
+    background: linear-gradient(135deg, #000, #0d1b24);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    position: fixed;
+    top: 0;
+    z-index: 100;
+}
+
+nav.header-bar .logo h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Main container */
+.container {
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start;     
+    min-height: 100vh; 
+    gap: 30px;
+    margin: 0 auto;
+    padding: 20px;
+    flex-wrap: wrap; /* allow stacking on small screens */
+}
+
+#back {
+	margin-left: 45%;
+}
+
+/* Page sections */
+.page {
+    border: 5px solid #27F531;
+    display: flex;
+    flex: 1 1 100%;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.page1 {
+    display: flex;
+    flex: 1 1 10%;
+    width: 170vh;
+}
+
+/* Two-column split */
+.map, .schedule {
+    flex: 1 1 45%;
+    min-width: 300px;
+    padding: 20px;
+}
+
+#map {
+    width: 100%;
+    height: 70vh;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Extra container */
+.container-two {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.19);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;	
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* Key legend */
+.key-table {
+    position: fixed;
+    top: 70px; /* slightly below header */
+    right: 20px;
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 101;
+}
+
+.key-table ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.key-table li {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.key-table span {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+/* Status colors */
+.red { background-color: #FF3B3F; }
+.green { background-color: #34C759; }
+.orange { background-color: #F56827; }
+
+/* Status text */
+.bus[data-status="on-time"] .time {
+    color: #34C759;
+    font-weight: bold;
+}
+
+.bus[data-status="delayed"] .time {
+    color: #F56827;
+    font-weight: bold;
+}
+
+.bus[data-status="not-coming"] .time {
+    color: #FF3B3F;
+    font-weight: bold;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    nav.header-bar .logo h1 {
+        font-size: 1.5rem;
+    }
+    .map, .schedule {
+        flex: 1 1 100%; /* stack vertically */
+    }
+    #map {
+        height: 40vh;
+    }
+    .key-table {
+        position: static;
+        margin: 15px auto;
+        width: fit-content;
+    }
+}

@@ -1,0 +1,80 @@
+<!--Driver instance-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>West Park 8 Driver</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+	<!--Leaflet library map styling and script-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+</head>
+
+<body>  
+	<nav class="header-bar">
+		<div class="logo">
+			<h1>TSHWANEBUSMATE</h1>
+		</div>
+	</nav>
+	<!--Legend for whether or not cerain times are active, delayed or not comming-->
+	<div class="key-table">
+		<h4>Legend</h4>
+
+		<ul>
+			<li><span class="red"></span> Not Coming</li>
+			<li><span class="green"></span> Coming</li>
+			<li><span class="orange"></span> Delayed</li>
+		</ul>
+	</div>
+
+		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
+		
+		<!--Leaflet map display-->
+		<div class="page1">
+			<div class="map">
+				<h1>Driver / Bus Page</h1>
+				<p id="status">Connecting to server...</p>
+				<h2>West Park (8) Map:</h2>
+			<div id="map"></div>
+			</div>
+		</div>
+
+	<script id="points" type="text/csv">
+		lng,lat
+		28.188423,-25.7479523
+		28.1824196, -25.7483627
+		28.1798994, -25.7470371
+		28.1774586, -25.7472159
+		28.1619474, -25.7482834
+		28.1444719, -25.7494401
+		28.1232362, -25.7509365
+		28.1072821, -25.7546352
+		28.0846001, -25.7594019
+		28.0725815, -25.7591713
+		28.0714893, -25.754934
+		28.0699348, -25.7516925
+		28.0704498, -25.7481206
+		28.0708933, -25.7534716
+		28.072052, -25.7554912
+		28.0857499, -25.7590779
+		28.0991141, -25.7565656
+		28.129759 ,-25.7503896
+		28.1613701, -25.7481176
+		28.1804527, -25.7469084
+		28.1818225, -25.7453504
+		28.1869324, -25.7449676
+		28.1905104, -25.7455523
+	</script>
+
+	<!--Time animation legend script-->
+	<script src="legend.js"></script>
+
+	<!--Combined driver script - handles map display AND GPS sending-->
+	<script src="driver-map-and-gps.js"></script>
+	
+</body>
+</html>

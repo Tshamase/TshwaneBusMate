@@ -1,0 +1,8 @@
+the routes uses 4 js files and 1 css files
+
+legend.js for displaying whether or not the bus is delays. not coming and coming
+display-map.js for displaying route simulation pointing to west park 7
+driver-map-and-gps.js for sending coords from the driver side and displaying it on a map
+test-display.js is the same as display-map.js but without a csv file but a hidden script file
+test-trackedmap for receiving coords from driver and displaying on passenger side map
+

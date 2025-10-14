@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tshwane Busses</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+        color: #f0f0f0;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: -1;
+    }
+
+    .menu-toggle {
+        position: fixed;
+        top: 30px;
+        left: 20px;
+        font-size: 24px;
+        color: #27ae60;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -220px;
+        width: 200px;
+        height: 100vh;
+        background: #0d1b24;
+        padding: 30px 0;
+        transition: left 0.3s ease;
+        z-index: 999;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .wrapper.active .sidebar { left: 0; }
+
+    .sidebar h2 {
+        color: #FFD700;
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.3s ease;
+    }
+    .sidebar ul li a {
+        color: #fafafc;
+        text-decoration: none;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+    .sidebar ul li:hover { background: rgba(255,255,255,0.05); }
+    .sidebar ul li:hover a { color: #27ae60; }
+
+    nav.header-bar {
+        width: 100%;
+        height: 15vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 40px;
+        color: white;
+        background: linear-gradient(135deg, #000, #0d1b24);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: fixed;
+        top: 0;
+        z-index: 100;
+    }
+
+    nav.header-bar .logo h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 17vh auto 0;
+      padding: 20px;
+    }
+
+    /* Welcome Card */
+    .welcome-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      padding: 35px 30px 30px 30px;
+      text-align: center;
+      margin-bottom: 35px;
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: fadeInDown 1s;
+    }
+    .welcome-card h1 {
+      font-size: 2.5rem;
+      color: #27F531;
+      margin-bottom: 10px;
+    }
+    .welcome-card h2 {
+      font-size: 2rem;
+      margin: 10px 0;
+    }
+    .welcome-card h2 span {
+      color: #FFD700;
+    }
+    .welcome-card p {
+      font-size: 1.1rem;
+      margin: 10px 0 20px 0;
+    }
+    .main-btn button {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .main-btn button:hover {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    /* Dropdowns */
+    .dropdown {
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 12px 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: box-shadow 0.2s;
+    }
+    .dropdown label {
+      font-size: 1.2rem;
+      color: #FFD700;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    .dropdown label .fa-chevron-down {
+      transition: transform 0.3s;
+    }
+    .dropdown input[type="checkbox"] {
+      display: none;
+    }
+    .dropdown-content {
+      display: none;
+      margin-top: 10px;
+      background: #22384a;
+      border-radius: 6px;
+      padding: 10px 18px;
+      animation: fadeIn 0.5s;
+    }
+    .dropdown input[type="checkbox"]:checked ~ .dropdown-content {
+      display: block;
+    }
+    .dropdown input[type="checkbox"]:checked + label .fa-chevron-down {
+      transform: rotate(180deg);
+    }
+    .dropdown-content ul {
+      margin-left: 15px;
+      color: #fff;
+    }
+    .dropdown-content a {
+      color: #27F531;
+      text-decoration: underline;
+    }
+    .dropdown-content a:hover {
+      color: #FFD700;
+    }
+
+    /* Map Section */
+    .map {
+      margin-top: 40px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .map h1 {
+      color: #FFD700;
+      margin-bottom: 15px;
+    }
+    .map-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .map-wrapper iframe {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 100%;
+    }
+    .map-text {
+      max-width: 350px;
+      color: #fff;
+    }
+    .map-text h2 {
+      color: #27F531;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding: 20px 0 10px 0;
+      background: #0d1b24;
+      color: #fff;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer .icons {
+      margin-bottom: 10px;
+    }
+    .footer .icons a {
+      color: #FFD700;
+      margin: 0 10px;
+      font-size: 1.3rem;
+      transition: color 0.2s;
+    }
+    .footer .icons a:hover {
+      color: #27F531;
+    }
+    .footer .designer {
+      color: #27F531;
+      font-weight: bold;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container { padding: 10px; }
+      .map-wrapper { flex-direction: column; align-items: stretch; }
+      nav.header-bar { padding: 10px 10px; }
+    }
+    @media (max-width: 600px) {
+      .container { margin-top: 18vh; }
+      .sidebar { width: 100vw; left: -100vw; }
+      .wrapper.active .sidebar { left: 0; }
+      nav.header-bar .logo h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <div class="wrapper">
+    <!-- Sidebar (from login.html) -->
+    <div class="sidebar">
+      <h2>TBM</h2>
+      <ul>
+        <li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="RN.html"><i class="fa-solid fa-bus"></i> About</a></li>
+        <li><a href="routes and tracking.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+        <li><a href="Payment Gate.php"><i class="fa-solid fa-bus"></i> Bus card</a></li>
+
+      </ul>
+    </div>
+
+    <!-- Header Bar (from login.html) -->
+    <nav class="header-bar">
+      <div class="logo" style="flex:1; display:flex; justify-content:center; align-items:center;">
+        <h1>TSHWANE<span>BUSMATE</span></h1>
+      </div>
+      <div style="position:absolute; right:40px; top:50%; transform:translateY(-50%); display:flex; gap:15px;">
+        <a href="login.html" style="text-decoration:none;">
+          <button style="padding:8px 22px; border-radius:25px; border:none; background:linear-gradient(135deg,#27ae60,#2ecc71); color:#fff; font-weight:bold; font-size:1rem; cursor:pointer; transition:background 0.3s;">Log In</button>
+        </a>
+        <a href="signup.php" style="text-decoration:none;">
+          <button style="padding:8px 22px; border-radius:25px; border:none; background:linear-gradient(135deg,#FFD700,#FFC300); color:#222; font-weight:bold; font-size:1rem; cursor:pointer; transition:background 0.3s;">Sign Up</button>
+        </a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Welcome Card on Top -->
+      <div class="welcome-card" id="welcomeCard">
+        <h1>Welcome!</h1>
+        <h2>To <span>TshwaneBusMate</span></h2>
+        <p>Choose us because we choose YOU! Read more on our <span style="color:#FFD700; font-weight:bold;">About</span> page.</p>
+        <div class="main-btn">
+          <a href="RN.html"><button>About</button></a>
+        </div>
+      </div>
+
+      <!-- Interactive Bus Area Dropdowns -->
+      <section class="Bus" id="busSection">
+        <div class="dropdown">
+          <input type="checkbox" id="cen">
+          <label for="cen"><i class="fa-solid fa-chevron-down"></i> Centurion</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li>bus Routes</li>
+                <li><a href="Centurion.html">ROUTE 4 - Olievenhoutbos to Centurion via Highveld - Ecopark - Southdowns</a></li>
+                <li>ROUTE 7 - Olievenhoutbos to Wierdapark - Eldoraine - Clubview A</li>
+                <li>Route 9</li>
+                <li>Valhalla</li>
+                <li>Voortrekkerhoogte</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <input type="checkbox" id="pc">
+          <label for="pc"><i class="fa-solid fa-chevron-down"></i> Pretoria Central</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li><a href="Pretoria Central.html">Brooklyn 5_8</a></li>  
+                <li>Brooklyn 9</li>
+                <li>Brooklyn 10</li>
+                <li>Colbyn</li>
+                <li>Muckleneuk7</li>
+                <li>Sunnyside</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+        <div class="dropdown">
+          <input type="checkbox" id="pe">
+          <label for="pe"><i class="fa-solid fa-chevron-down"></i> Pretoria East</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li><a href="Pretoria East.html">Defence Force</a></li>
+                <li>Eastlynne 2</li>
+                <li>Faerie Glen</li>
+                <li>Garsfontein 1</li>
+                <li>Garsfontein 2</li>
+                <li>Garsfontein 3</li>
+                <li>Innovation Hub</li>
+                <li>Lynnwood Manor, Ridge</li>
+                <li>Meyerspark</li>
+                <li>Monumentpark 1</li>
+                <li>Monumentpark 2</li>
+                <li>Moreleta Park</li>
+                <li>Murrayfield</li>
+                <li>Queenswood</li>
+                <li>Scientia</li>
+                <li>Silverton 1</li>
+                <li>Silverton 2</li>
+                <li>Silverton 3</li>
+                <li>Waterkloof Glen, Ridge</li>
+                <li>Wilgers Wapadrand</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <input type="checkbox" id="pmo">
+          <label for="pmo"><i class="fa-solid fa-chevron-down"></i> Pretoria Moot</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li><a href="Pretoria Moot.html">Moregloed 1</a></li>
+                <li>Rietfontein21</li>
+                <li>Villieria1_3</li>
+                <li>Waverley 6</li>
+                <li>Wonderboom South</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <input type="checkbox" id="pn">
+          <label for="pn"><i class="fa-solid fa-chevron-down"></i> Pretoria North</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li><a href="Pretoria North.html">Pretoria North 1</a></li>
+                <li>Pretoria North 2</li>
+                <li>Pretoria North 3</li>
+                <li>Pretoria North 4</li>
+                <li>Doornpoort 1</li>
+                <li>Doornpoort 2</li>
+                <li>Doornpoort 3</li>
+                <li>Wonderboom 1</li>
+                <li>Wonderboom 2</li>
+                <li>Wonderboom 3</li>
+                <li>Wonderboom 4</li>
+                <li>The Orchards 1</li>
+                <li>The Orchards 2</li>
+                <li>The Orchards 3</li>
+                <li>Theresa Park</li>
+                <li>Mountainview 1</li>
+                <li>Mountainview 2_4</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <input type="checkbox" id="pw">
+          <label for="pw"><i class="fa-solid fa-chevron-down"></i> Pretoria West</label>
+          <div class="dropdown-content">
+            <ul>
+              <li><strong>Areas:</strong></li>
+              <ul>
+                <li>WestPark 1</li>
+                <li>WestPark 2</li>
+                <li>WestPark 6</li>
+                <li><a href="Pretoria West 2.html">WestPark 7</a></li>
+                <li>WestPark 8</li>
+                <li>Booysens</li>
+                <li>Erasmia 2</li>
+                <li>Erasmia 3</li>
+                <li>Danville 1, 2–6</li>
+                <li>Tuine 1</li>
+                <li>Tuine 2</li>
+              </ul>
+            </ul>
+          </div>
+        </div>  
+      </section>
+
+      <!-- Map Section -->
+      <section class="map" id="aboutSection">
+        <h1>Map</h1>
+        <div class="map-wrapper">
+          <iframe 
+            src="https://embed.waze.com/iframe?zoom=14&lat=-26.2361&lon=28.3694&ct=livemap" 
+            width="600" 
+            height="450" 
+            allowfullscreen>
+          </iframe>
+          <div class="map-text">
+            <h2>Live Traffic View</h2>
+            <p>Stay ahead of delays! Use our real-time map to track traffic and plan your bus journey with ease.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <div class="icons">
+            <a href="https://twitter.com/?lang=en-za"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/"><i class="fa-brands fa-square-instagram"></i></a>
+        </div>
+        <p>Copyright &copy;2025; Designed by <span class="designer"> Tshwane</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot Integration Start -->
+  <link rel="stylesheet" href="chat.css">
+  <section class="chat-window" style="display:flex; background:#fff; color:#222;">
+      <button class="close" style="color:#fff;">x close</button>
+      <div class="chat">
+          <div class="model">
+              <p style="color:#222;">Hi, how can I help you?</p>
+          </div>
+      </div>
+      <div class="input-area">
+          <input placeholder="Ask me anything..." type="text" style="color:#222;">
+          <button>
+              <img src="send-icon.png" alt="send">
+          </button>
+      </div>
+  </section>
+  <div class="chat-button">
+      <img src="chat-icon.png" alt="start chat">
+  </div>
+  <script src="chat.js"></script>
+  
+  <script>
+ // checks to see whether browser supports service worker use 
+    if ('serviceWorker' in navigator){
+      navigator.serviceWorker.register('service-worker.js')
+      .then(registration => {
+        console.log("Service Worker registered with scope:", registration.scope);
+      })
+      .catch(error => {
+        console.log("Service Worker registration failed:", error);
+      });
+    }
+
+    // Chatbot open/close logic
+    document.addEventListener("DOMContentLoaded", function() {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatButton = document.querySelector('.chat-button');
+      const closeBtn = document.querySelector('.chat-window .close');
+
+      // Show chat when chat button is clicked
+      chatButton.addEventListener('click', function() {
+        chatWindow.style.display = 'flex';
+      });
+
+      // Hide chat when close button is clicked
+      closeBtn.addEventListener('click', function() {
+        chatWindow.style.display = 'none';
+      });
+    });
+  </script>
+  <!-- Chatbot Integration End -->
+
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.wrapper').classList.toggle('active');
+    }
+    window.addEventListener('click', function(e) {
+      const wrapper = document.querySelector('.wrapper');
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.menu-toggle');
+      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+        wrapper.classList.remove('active');
+      }
+    });
+
+    // Scroll to About section when About button is clicked
+    function scrollToAbout() {
+      document.getElementById('aboutSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Enhance dropdowns: close others when one is opened
+    document.querySelectorAll('.dropdown input[type="checkbox"]').forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          document.querySelectorAll('.dropdown input[type="checkbox"]').forEach(function(other) {
+            if (other !== checkbox) other.checked = false;
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tswanebusmate - About</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+            color: #f0f0f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 30px;
+            left: 20px;
+            font-size: 24px;
+            color: #27ae60;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -220px;
+            width: 200px;
+            height: 100vh;
+            background: #0d1b24;
+            padding: 30px 0;
+            transition: left 0.3s ease;
+            z-index: 999;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .wrapper.active .sidebar { left: 0; }
+
+        .sidebar h2 {
+            color: #FFD700;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s ease;
+        }
+        .sidebar ul li a {
+            color: #fafafc;
+            text-decoration: none;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+        .sidebar ul li:hover { background: rgba(255,255,255,0.05); }
+        .sidebar ul li:hover a { color: #27ae60; }
+
+        nav.header-bar {
+            width: 100%;
+            height: 15vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 40px;
+            color: white;
+            background: linear-gradient(135deg, #000, #0d1b24);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav.header-bar .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 17vh auto 0;
+            padding: 0 20px 40px 20px;
+        }
+
+        /* --- Keep all your original about/team styles below --- */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
+                        url() no-repeat center center/cover;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #FFD700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            color: #e0e0e0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #27ae60;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #27ae60, #FFD700);
+            border-radius: 2px;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(39, 174, 96, 0.5);
+        }
+
+        .member-img {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #2c3e50, #1a252f);
+        }
+
+        .member-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-member:hover .member-img img {
+            transform: scale(1.05);
+        }
+
+        .member-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(39, 174, 96, 0.2), rgba(241, 196, 15, 0.2));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .team-member:hover .member-img::before {
+            opacity: 1;
+        }
+
+        .member-info {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .member-info h3 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .member-info .role {
+            color: #FFD700;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .member-info p {
+            font-size: 1rem;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            transform: translateY(-3px);
+        }
+
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(241, 196, 15, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #000, #0d1b24);
+            padding: 40px 0 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff 60%, #FFD700 40%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            nav.header-bar { padding: 10px 10px; }
+            .main-content { padding: 0 5px 40px 5px; }
+            .hero h2 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .section { padding: 30px 20px; }
+            .team-container { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        }
+
+        @media (max-width: 480px) {
+            .hero h2 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .section h2 { font-size: 1.8rem; }
+            .team-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-toggle" onclick="toggleSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+    <div class="wrapper">
+      <!-- Sidebar (from login.html) -->
+      <div class="sidebar">
+        <h2>TBM</h2>
+        <ul>
+          <li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="RN.html"><i class="fa-solid fa-bus"></i> About</a></li>
+          <li><a href="routes and tracking.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+          <li><a href="#"><i class="fa-solid fa-comments"></i> Inquiries</a></li>
+        </ul>
+      </div>
+
+      <!-- Header Bar (from login.html) -->
+      <nav class="header-bar">
+        <div class="logo" style="flex:1; display:flex; justify-content:center; align-items:center;">
+          <h1>TSHWANE<span>BUSMATE</span></h1>
+        </div>
+      </nav>
+
+      <div class="main-content">
+        <!-- --- Original About/Team Content Starts Here --- -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Revolutionizing Public Transport in Tshwane</h2>
+                <p>Making bus travel smarter, safer, and more efficient for everyone</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="section">
+                <h2>About Tswanebusmate</h2>
+                <p>Tswanebusmate is a revolutionary bus tracking and transport management platform designed to make public transport more efficient, reliable, and accessible. With real-time tracking, schedule viewing, credit purchases, AI-powered alerts, and alternative transport suggestions, our goal is to enhance commuter convenience and safety in Tshwane.</p>
+                <p>Our platform leverages cutting-edge technology to provide accurate, up-to-the-minute bus location data and timely alerts about delays or disruptions. We believe that informed commuters are happier commuters, and Tswanebusmate is here to make that a reality.</p>
+                
+                <div class="mission-vision">
+                    <div class="card">
+                        <h3>Our Mission</h3>
+                        <p>To modernize public transportation in Tshwane by integrating smart solutions that improve efficiency, safety, and user satisfaction. We aim to create a seamless commuting experience that encourages more people to choose public transport.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Our Vision</h3>
+                        <p>To be the leading public transport management platform in South Africa, providing innovative solutions that connect people and places seamlessly. We envision a future where public transport is the preferred choice for all Tshwane residents.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Our Development Team</h2>
+                <p>Meet the talented individuals behind Tswanebusmate who are revolutionizing public transport in Tshwane.</p>
+                
+                <div class="team-container">
+                    <!-- Tshiamo -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Tshiamo</h3>
+                            
+                            <span class="role">Testing and Debugging</span>
+                            <p>Part of software development team, Responsible for presentations.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Lindo -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Lindo</h3>
+                            <span class="role">UX/UI Designer</span>
+                            <p>Routes and tracking the position of the bus, Part of the data mining team</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tumelo -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Tumelo</h3>
+                            <span class="role">Backend Engineer</span>
+                            <p>Responsible for compiling all the source code and ensuring the smooth running of the application</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Mogomotsi -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Mogomotsi</h3>
+                            <span class="role">Payment Systems Manager</span>
+                            <p>Responsible for creating, managing and ensuring the safety of the payment plan system</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Slondiwe -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Slondiwe</h3>
+                            <span class="role">UI Designer</span>
+                            <p>Responsible for creating intuitive user interfaces and enhancing user experience</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Nompumelelo -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Nompumelelo</h3>
+                            <span class="role">Data Analyst</span>
+                            <p>Brings expertise in data mining and analysis to improve system performance.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Dipela -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Dipela</h3>
+                            <span class="role">Frontend & Feature Developer</span>
+                            <p>Provded scripts for PWA, contributed to routes and tracking the position of the bus, assisted with code where needed.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Samuel -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Sam</h3>
+                            <span class="role">Business Liason</span>
+                            <p>Constructed the business plan and outlook, responsible for monetisation and presentations</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Charma -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Charma</h3>
+                            <span class="role">Network Engineer </span>
+                            <p>Created and hosts the server, handles the connection of the backend and frontend. Just happy to be here</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Arikhonisaho -->
+                    <div class="team-member">
+                        <div class="member-info">
+                            <h3>Arikhonisaho</h3>
+                            <span class="role">Lead AI Engineer</span>
+                            <p>Responsible for the chatbot, part of data mining team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- --- Original About/Team Content Ends Here --- -->
+      </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">Tswanebusmate</div>
+            <p>Transforming public transport in Tshwane through innovative technology</p>
+            <div class="copyright">
+                &copy; 2025 Tswanebusmate. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleSidebar() {
+          document.querySelector('.wrapper').classList.toggle('active');
+        }
+        // Simple animation for team members when they come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const teamMembers = document.querySelectorAll('.team-member');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = "1";
+                        entry.target.style.transform = "translateY(0)";
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            teamMembers.forEach(member => {
+                member.style.opacity = "0";
+                member.style.transform = "translateY(30px)";
+                member.style.transition = "all 0.6s ease";
+                observer.observe(member);
+            });
+        });
+    </script>
+</body>
+</html>

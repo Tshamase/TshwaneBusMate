@@ -1,0 +1,10 @@
+TshwaneBusMate Structure
+
+Driver side and Passenger side websites stored in 'Public' nodejs file Structure
+    This is so that the driver side can communicate with passenger side (tracking)
+
+Depending on website side, either add new files to Driver folder (driver side website) or 
+    Passenger (passenger side website), within the 'Public' file
+
+Nodejs allows for communication between html files
+To use nodejs on your own system you must have it installed on your system

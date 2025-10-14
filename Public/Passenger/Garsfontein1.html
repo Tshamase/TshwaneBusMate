@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Grasfontein 1</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+	<!--Leaflet library map styling and script-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+</head>
+
+<body>
+	<nav class="header-bar">
+		<div class="logo">
+			<h1>TSHWANEBUSMATE</h1>
+		</div>
+	</nav>
+	<!--Legend for whether or not cerain times are active, delayed or not comming-->
+	<div class="key-table">
+		<h4>Legend</h4>
+
+		<ul>
+			<li><span class="red"></span> Not Coming</li>
+			<li><span class="green"></span> Coming</li>
+			<li><span class="orange"></span> Delayed</li>
+		</ul>
+	</div>
+
+		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
+		
+		<!--Leaflet map display-->
+		<div class="page1">
+			<div class="map">
+				<h2>Grasfontein 1 Map:</h2>
+			<div id="map"></div>
+			</div>
+		</div>
+
+	<div class="page">
+		<div class="schedule">
+			<!--Schedule Section-->
+			<h2>Grasfontein 1 Schedule</h2>
+			<p>Bus Schedule MONDAYS TO FRIDAYS</p>
+	  		
+			<div class="container-two">
+				<div class="from-list-container">
+				
+					<p><b>FROM CITY</b></p>
+					<ul>
+						
+						<li class="bus"><span class="time">05:50</span></li>
+						<li class="bus"><span class="time">08:20</span></li>
+						<li class="bus"><span class="time">12:35</span></li>
+						<li class="bus"><span class="time">16:05</span></li>
+						<li class="bus"><span class="time">17:25</span></li>
+					</ul>
+				</div>
+			</div>
+	  		
+			<div class="container-two">
+		    	<div class="to-list-container">	
+					<p><b>TO CITY</b></p>
+					<ul>
+						<li class="bus"><span class="time">06:25</span></li>
+						<li class="bus"><span class="time">08:00(A)</span></li>
+						<li class="bus"><span class="time">08:50</span></li>
+					</ul>
+			</div>
+			
+			<div class="to-list-container">
+					<ul>
+						<li class="bus"><span class="time">13:10</span></li>
+						<li class="bus"><span class="time">16:40</span></li>
+						<li class="bus"><span class="time">18:00</span></li>
+					</ul>
+			</div>
+			</div>
+		
+			<div class="container-two">
+				<div class="from-list-container">
+					<p><b>Bus Schedule SATURDAYS</b></p>
+					<ul>
+						<li class="bus"><span>No service available</span></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="container-two">
+				<div class="from-list-container">
+					<p><b>Bus Schedule SUNDAYS AND HOLIDAYS</b></p>
+					<ul>
+						<li class="bus"><span>No service available</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--Time animation legend script-->
+	<script src="legend.js"></script>
+
+	<!--for simulation using points.csv-->
+	<script src="Display-map.js"></script>
+
+	<!--for simulation using hidden script-->
+	<!-- <script src="test-display.js"></script>-->
+	
+	<!--for actual tracking
+	<script src="test-trackedmap.js"></script>-->
+</body>
+</html>

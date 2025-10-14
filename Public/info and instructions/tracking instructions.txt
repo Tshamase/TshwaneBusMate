@@ -1,0 +1,10 @@
+how to run and track gps devices via web browser (like a real G)
+
+1. ensure theres two devices (tracker and trackee)
+2. activate nodejs (node server.js in the terminal)
+2.1 ensure your system has nodejs and ngrok installed, also have an ngrok account to test youself :) 
+3. run ngrok (ngrok http 3000)
+4. change web socket link (wss) link in the "driver-map-and-gps.js" and/or test-trackedmap files to the ngrok provided link (...free.app)
+5. run ngrok url for tracker to send out gps location (i.e ngrok-url/sunnyside-driver.html), 
+    and trackee for receiving and displaying gps location (i.e ngrok-url/sunnyside-driver.html).
+6. stalk your favourite tshwane bus driver hahahahaha 	(ㆆ _ ㆆ)
