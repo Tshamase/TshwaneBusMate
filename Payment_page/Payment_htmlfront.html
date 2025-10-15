@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Payment_stylesheet.css" />
+    <script src="Payment_jsback.js" defer></script>
+
+    <title>TshwaneBusMate - Payment Gateway</title>
+    <!-- Head section: metadata and page title. -->
+  </head>
+  <body>
+    <!-- Header Section: site title and a back button -->
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <h1>TshwaneBusMate</h1>
+        </div>
+        <!-- Back button: navigates to Credit Wallet page when clicked -->
+        <button
+          class="back-button"
+          onclick="window.location.href='Credit Wallet.php'"
+        >
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main>
+      <div class="content-container">
+        <!-- Payment Form Section: user selects action and enters relevant details -->
+        <h2>Payment Gateway</h2>
+
+        <!-- Invoice/payment form. -->
+        <form id="invoicePayment" method="post">
+          <!-- Action selection: reload balance or purchase a product -->
+          <div class="form-group">
+            <label for="actionSelect">Choose action</label>
+            <select id="actionSelect" name="action" required>
+              <option value="" disabled selected>-- Select an option --</option>
+              <option value="reload">Reload credits (Add to balance)</option>
+              <option value="purchase">Purchase product</option>
+            </select>
+          </div>
+
+          <!--
+                        Reload Amount Section:
+                        Shown when user selects "reload". The surrounding div uses a 'hidden'
+                   -->
+          <div id="reloadFields" class="hidden">
+            <div class="form-group">
+              <label for="reloadAmount">Reload amount (ZAR)</label>
+              <input
+                id="reloadAmount"
+                name="reloadAmount"
+                type="number"
+                min="11"
+                max="3000"
+                step="0.01"
+                placeholder="Enter amount"
+              />
+            </div>
+          </div>
+
+          <!--
+                        Purchase Product Section:
+                        Shown when user selects "purchase". Users can pick up to 3 packages
+                    -->
+          <div id="purchaseFields" class="hidden">
+            <div class="form-group">
+              <label>Select product(s)</label>
+
+              <!-- Container for package selection rows -->
+              <div id="packageList">
+                <div class="packageItem">
+                  <select name="product[]" required>
+                    <option value="" disabled selected>
+                      -- Choose product --
+                    </option>
+                    <!-- Option values represent price in ZAR -->
+                    <option value="20">Connector 20 - ZAR 20.00</option>
+                    <option value="60">Connector 60 - ZAR 60.00</option>
+                    <option value="80">Connector 80 - ZAR 80.00</option>
+                    <option value="100">Connector 100 - ZAR 100.00</option>
+                    <option value="150">Connector 150 - ZAR 150.00</option>
+                    <option value="200">Connector 200 - ZAR 200.00</option>
+                    <option value="350">Connector 350 - ZAR 350.00</option>
+                    <option value="500">Connector 500 - ZAR 500.00</option>
+                  </select>
+                  <!-- Remove button for the package row; expected to be wired with JS -->
+                  <button type="button" class="btn-remove">Remove</button>
+                </div>
+              </div>
+
+              <div class="package-controls">
+                <!-- Add package button: should clone a packageItem up to a limit (3) -->
+                <button type="button" id="addPackageBtn" class="btn-add">
+                  Add package
+                </button>
+                <small style="color: #aaa">You may add up to 3 packages</small>
+              </div>
+            </div>
+          </div>
+
+          <!--
+                        Invoice Summary section:
+                        Toggle link and invoice display (hidden by default).
+                    -->
+          <div style="margin-top: 30px">
+            <a id="toggleInvoiceLink" href="#" class="toggle-link">Toggle Invoice</a>
+            <div id="invoiceSummary" class="invoice">
+              <h3>Invoice</h3>
+              <ul id="invoiceItems"></ul>
+              <div class="total">
+                <span>Total</span><span id="invoiceTotal">ZAR 0.00</span>
+              </div>
+              <div id="invoicePaying" class="invoicePaying"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+          <!--
+                        Loyalty section: optional feature to add loyalty points.
+                        Hidden by default and displayed when relevant (e.g., bank supports).-->
+                    
+          <div
+            id="loyaltySection"
+            class="loyalty-section"
+            style="
+              display: none;
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 10px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            "
+          >
+            <h4 style="color: #ffd700; margin-bottom: 15px">Loyalty Points</h4>
+
+            <div class="form-group">
+              <label style="margin-bottom: 10px"
+                >Would you like to add loyalty points?</label
+              >
+              <div style="display: flex; gap: 20px; align-items: center">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="radio"
+                    name="loyaltyChoice"
+                    value="yes"
+                    id="loyaltyYes"
+                  />
+                  <span>Yes, add loyalty points</span>
+                </label>
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="radio"
+                    name="loyaltyChoice"
+                    value="no"
+                    id="loyaltyNo"
+                    checked
+                  />
+                  <span>No, skip loyalty points</span>
+                </label>
+              </div>
+            </div> 
+
+            <!-- Loyalty details: shown only if user opts in -->
+            <div id="loyaltyDetails" style="display: none; margin-top: 15px">
+              <div class="form-group">
+                <label for="loyaltyNumber">Loyalty Card Number</label>
+                <input
+                  id="loyaltyNumber"
+                  type="text"
+                  maxlength="16"
+                  placeholder="Enter loyalty card number"
+                />
+                <div class="error-message" id="loyaltyNumberError"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="loyaltyProgram">Loyalty Program</label>
+                <select id="loyaltyProgram" name="loyalty-program">
+                  <option value="" disabled selected>
+                    -- Select Program --
+                  </option>
+                  <option value="standard-rewards">
+                    Standard Bank Rewards
+                  </option>
+                  <option value="absa-rewards">Absa Rewards</option>
+                  <option value="fnb-ebucks">FNB eBucks</option>
+                  <option value="nedbank-greenbacks">Nedbank Greenbacks</option>
+                  <option value="capitec-live-better">
+                    Capitec Live Better
+                  </option>
+                </select>
+                <div class="error-message" id="loyaltyProgramError"></div>
+              </div>
+
+              <div style="margin-top: 10px; font-size: 0.9em; color: #aaa">
+                <i class="fas fa-info-circle"></i> Earn points on your
+                transaction based on your bank's loyalty program
+              </div>
+            </div>
+          </div>
+
+          <small style="color: #aaa"
+            >You will be shown EFT instructions after submitting.</small
+          >
+
+          <!-- Proceed to payment: should validate form client-side, then submit or open payment UI -->
+          <button id="proceedPay" class="btn-proceed">Proceed to Pay</button>
+        </div>
+    </main>
+
+    <!-- Footer copyright notice -->
+    <footer>
+      <div class="copyright">
+        Copyright &copy; 2025 City of Tshwane. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>
