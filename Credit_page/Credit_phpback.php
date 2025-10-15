@@ -3,7 +3,8 @@
 // ======= Links connecting to other webpages ============
 
 /*include 'Database.php';*/
-$PaymentUrl = 'Payment Gate.php';
+$PaymentUrl = 'payment_gateway.php';
+$historyUr = 'creditTransc.php';
 include 'Credit_htmlfont.html';
 
 ?>
