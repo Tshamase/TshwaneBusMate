@@ -35,7 +35,6 @@
   var purchaseFields = document.getElementById("purchaseFields");
   var packageList = document.getElementById("packageList");
   var addPackageBtn = document.getElementById("addPackageBtn");
-  var toggleInvoiceLink = document.getElementById("toggleInvoiceLink");
   var invoiceSummary = document.getElementById("invoiceSummary");
   var invoiceItems = document.getElementById("invoiceItems");
   var invoiceTotal = document.getElementById("invoiceTotal");
@@ -250,22 +249,16 @@
       totalValue > 0 ||
       (action === "reload" && parseFloat(reloadAmount.value) > 0)
     ) {
-      toggleInvoiceLink.classList.remove("hidden");
       invoiceSummary.classList.remove("hidden");
       invoiceTotal.textContent = formatZAR(totalWithCharges);
     } else {
-      toggleInvoiceLink.classList.add("hidden");
       invoiceSummary.classList.add("hidden");
       invoicePaying.classList.add("hidden");
       invoicePaying.textContent = "";
     }
   }
 
-  // Toggle invoice visibility
-  toggleInvoiceLink.addEventListener("click", function (e) {
-    e.preventDefault();
-    invoiceSummary.classList.toggle("hidden");
-  });
+
 
   // Update invoice on reload amount change
   reloadAmount.addEventListener("input", function () {
