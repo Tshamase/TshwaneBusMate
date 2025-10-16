@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tshwane Bus Routes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+      color: #f0f0f0;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: -1;
+    }
+
+    .menu-toggle {
+        position: fixed;
+        top: 30px;
+        left: 20px;
+        font-size: 24px;
+        color: #27ae60;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -220px;
+        width: 200px;
+        height: 100vh;
+        background: #0d1b24;
+        padding: 30px 0;
+        transition: left 0.3s ease;
+        z-index: 999;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .wrapper.active .sidebar { left: 0; }
+
+    .sidebar h2 {
+        color: #FFD700;
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.3s ease;
+    }
+    .sidebar ul li a {
+        color: #fafafc;
+        text-decoration: none;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+    .sidebar ul li:hover { background: rgba(255,255,255,0.05); }
+    .sidebar ul li:hover a { color: #27ae60; }
+
+    nav.header-bar {
+        width: 100%;
+        height: 15vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 40px;
+        color: white;
+        background: linear-gradient(135deg, #000, #0d1b24);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: fixed;
+        top: 0;
+        z-index: 100;
+    }
+
+    nav.header-bar .logo h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Main content styles (keep your card styles, just update colors for dark bg) */
+    .section {
+      max-width: 1100px;
+      margin: 15vh auto 0;
+      padding: 20px;
+    }
+    .section h2 {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #27F531;
+      border-bottom: 2px solid #27F531;
+      padding-bottom: 5px;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .route-card {
+      background-color: #1a2f3a;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      padding: 20px;
+      transition: transform 0.2s ease;
+      color: #fff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .route-card:hover {
+      transform: scale(1.02);
+      background: #22384a;
+    }
+    .route-card h3 {
+      color: #27F531;
+      margin-bottom: 10px;
+    }
+    .route-card p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+    .card-link {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background-color: #27F531;
+      color: #222;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .card-link:hover {
+      background-color: #1dbf2f;
+      color: #fff;
+    }
+
+    /* Read more/collapse */
+    .route-details {
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      max-height: 7.5rem; /* collapsed height */
+    }
+    .route-details.expanded {
+      max-height: 2000px;
+    }
+    .read-more {
+      margin-top: 12px;
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .read-more:hover {
+      border-color: #27F531;
+      color: #27F531;
+    }
+
+    /* small screens tweak */
+    @media (max-width: 480px) {
+      .route-details { max-height: 9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <div class="wrapper">
+    <!-- Sidebar (from login.html) -->
+    <div class="sidebar">
+      <h2>TBM</h2>
+      <ul>
+        <li><a href="home.html"><i class="fa-solid fa-house"></i>  Home</a></li>
+        <li><a href="#"><i class="fa-solid fa-bus"></i>  About</a></li>
+        <li><a href="#"><i class="fa-solid fa-comments"></i>  Inquiries</a></li>
+      </ul>
+    </div>
+
+    <!-- Header Bar (from login.html) -->
+    <nav class="header-bar">
+      <div class="logo">
+        <h1>TSHWANE<span>BUSMATE</span></h1>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="section">
+      <h2>Available Bus Routes</h2>
+      <div class="card-container">
+
+        <!-- Route 1 -->
+        <div class="route-card">
+          <h3>Route 1: Brooklyn 9</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Lenchen, Embankment, Gerhard, Glover, Rabie, Cradock, Trichardt, Snake Valley, Old
+                                        Johannesburg Road, Francis Baard and Bosman. </p>
+            <p><strong>ROUTE OUT:</strong> From Potgieter Street departure point in Pretorius Street just east of Paul Kruger. Via Pretorius
+                                              to Sophie du Bruyn, Kgosi Mampuru, Old Johannesburg Road, Trichardt, Snake Valley, Trichardt, Cradock,
+                                              Cantonment, Glover, Rabie, Jean, Lenchen.</p>
+            <p><strong>First Bus To City:</strong> 05:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 17:30 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:10</p>
+          </div>
+          <a href="Brooklyn9.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 2 -->
+        <div class="route-card">
+          <h3>Route 2: Brooklyn 10</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster and travel up to first circle in Southdowns (turnaround), left
+                                        along Nellmapius, right along Luton, right along Logan, left along Tegel, Oak, right along Witch-Hazel,
+                                        left along Olievenhoutbosch, left along John Vorster, left along N14, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade, left along Samrand, right at Tjunction, right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along
+                                                Waterberg, right along Lindani becoming Marudi, left along Waterberg, left along R55, left along N14,
+                                                left along John Vorster, turn right over the highway and travel along John Vorster up to the Terminus,
+                                                just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 04:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:15 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:25 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:15</p>
+          </div>
+          <a href=" Brooklyn10.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 3 -->
+        <div class="route-card">
+          <h3>Route 3:Defence Force</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from Waterberg, turn right along Serenade, left along Samrand, right at T-Junction,
+                                        right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along
+                                        Lindani becoming Marudi, left along Waterberg, left along R55, right along Ruimte, right along Aletta, left
+                                        along Louisa, left along Rooihuiskraal, right along Ruimte, right along Saxby (Terminus) </p>
+                                                
+            <p><strong>ROUTE OUT:</strong> Depart from Lyttleton, right along Harvard, right along Blackwood, Galway, right along Hendrik
+                                        Verwoerd, right along Willem Botha circle, Ruimte, right along Chris Hougaard, left along Ruimte, left
+                                        along Rooihuiskraal, right along Louisa, right along Aletta, left along Ruimte, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+                                            
+            <p><strong>First Bus To City:</strong> 04:45 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:50 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:15 AM</p>
+            <p><strong>Last Bus From City:</strong> 16:35 PM</p>
+          </div>
+          <a href="DefenceForce.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 4 -->
+        <div class="route-card">
+          <h3>Route 4: Eastlynne 1</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster, left along Nellmapius, Left Main, Botha Avenue Left Cantoment, Right
+                                       Jean Avenue to City</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade,Left Syphony,Right Serurubele, Samrand, right
+                                        along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along Lindani
+                                        becoming Marudi, left along Waterberg, left along R55, left along N14, left along John Vorster, turn right over
+                                        the highway and travel along John Vorster up to the Terminus, just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 05:00 AM</p>
+            <p><strong>Last Bus To City:</strong> 06:00 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:35 AM</p>
+            <p><strong>Last Bus From City:</strong> 15:40 PM</p>
+          </div>
+          <a href=" Eastlynne1.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 5 -->
+        <div class="route-card">
+          <h3>Route 5: Eastlynne 2</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Angvick, Fergus, Bruarfoss, Flora, Alaric, Kew, Bergen, Bruarfoss, Imatra, Olga, Myrdal,
+                                        Campbell, Viking, Vestness, Hugo, Vinstra, Magnus, Bodo, Fjord, Paul Kruger, further the same in an opposite
+                                        direction, except via Francis Baard to City. </p>
+            <p><strong>ROUTE OUT:</strong> From Pretorius between Thabo Sehume and Paul Kruger, via Pretorius, Sophie de Bruyn, Kgosi
+                                             Mampuru, Jan Smuts, Paul Kruger, Fjord (Terminus)</p>
+            <p><strong>First Bus To City:</strong> 05:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 18:10 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:30</p>
+          </div>
+          <a href="Eastlynne2.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 6 -->
+        <div class="route-card">
+          <h3>Route 6: Faerie Glen</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Tobias Smuts Road, Johannes Bekker, Coenraad Brits, Johannes Bekker; further the same in
+                                        an opposite direction except via Kgosi Mampuru and Francis Baard to the city centre.</p>
+                                                
+            <p><strong>ROUTE OUT:</strong> From Pretorius Street between Thabo Sehume and Paul Kruger, via Pretorius, Sophie de Bruyn,
+                                        Kgosi Mampuru, Jan Smuts, Voortrekkerhoogte bypass, Voortrekker, De Wet, Voortrekker, Helwan, Bardia,
+                                        Hendrik Potgieter, Van Riebeeck, Henry Williams, Jacobus Jooste, Stephanus Schoeman, Frederik Ernst,
+                                        Andries Pretorius, Hendrik Alberts and Tobias Smuts Road (Terminus).</p>
+            <p><strong>First Bus To City:</strong> 05:55 AM</p>
+            <p><strong>Last Bus To City:</strong> 18:10 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:20 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:30</p>
+          </div>
+          <a href="FaerieGlen.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 7 -->
+        <div class="route-card">
+          <h3>Route 7:Garsfontein 1</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Lenchen, Embankment, Gerhard, Glover, Rabie, Cradock, Trichardt, Snake Valley, Old
+                                        Johannesburg Road, Francis Baard and Bosman. </p>
+            <p><strong>ROUTE OUT:</strong> From Potgieter Street departure point in Pretorius Street just east of Paul Kruger. Via Pretorius
+                                          to Sophie du Bruyn, Kgosi Mampuru, Old Johannesburg Road, Trichardt, Snake Valley, Trichardt, Cradock,
+                                          Cantonment, Glover, Rabie, Jean, Lenchen.</p>
+            <p><strong>First Bus To City:</strong> 05:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 17:30 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:10</p>
+          </div>
+          <a href="Garsfontein1.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 8 -->
+        <div class="route-card">
+          <h3>Route 8:Garsfontein 2</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster and travel up to first circle in Southdowns (turnaround), left
+                                        along Nellmapius, right along Luton, right along Logan, left along Tegel, Oak, right along Witch-Hazel,
+                                        left along Olievenhoutbosch, left along John Vorster, left along N14, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade, left along Samrand, right at Tjunction, right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along
+                                                Waterberg, right along Lindani becoming Marudi, left along Waterberg, left along R55, left along N14,
+                                                left along John Vorster, turn right over the highway and travel along John Vorster up to the Terminus,
+                                                just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 04:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:15 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:25 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:15</p>
+          </div>
+          <a href="Grasfontein2.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 9 -->
+        <div class="route-card">
+          <h3>Route 9: Garsfontein 3</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from Waterberg, turn right along Serenade, left along Samrand, right at T-Junction,
+                                        right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along
+                                        Lindani becoming Marudi, left along Waterberg, left along R55, right along Ruimte, right along Aletta, left
+                                        along Louisa, left along Rooihuiskraal, right along Ruimte, right along Saxby (Terminus) </p>
+                                                
+            <p><strong>ROUTE OUT:</strong> Depart from Lyttleton, right along Harvard, right along Blackwood, Galway, right along Hendrik
+                                        Verwoerd, right along Willem Botha circle, Ruimte, right along Chris Hougaard, left along Ruimte, left
+                                        along Rooihuiskraal, right along Louisa, right along Aletta, left along Ruimte, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+                                            
+            <p><strong>First Bus To City:</strong> 04:45 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:50 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:15 AM</p>
+            <p><strong>Last Bus From City:</strong> 16:35 PM</p>
+          </div>
+          <a href="Grasfontein3.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+
+        <!-- Route 10 -->
+        <div class="route-card">
+          <h3>Route 10:Lynnwood Manor</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Tobias Smuts Road, Johannes Bekker, Coenraad Brits, Johannes Bekker; further the same in
+                                        an opposite direction except via Kgosi Mampuru and Francis Baard to the city centre.</p>
+                                                
+            <p><strong>ROUTE OUT:</strong> From Pretorius Street between Thabo Sehume and Paul Kruger, via Pretorius, Sophie de Bruyn,
+                                        Kgosi Mampuru, Jan Smuts, Voortrekkerhoogte bypass, Voortrekker, De Wet, Voortrekker, Helwan, Bardia,
+                                        Hendrik Potgieter, Van Riebeeck, Henry Williams, Jacobus Jooste, Stephanus Schoeman, Frederik Ernst,
+                                        Andries Pretorius, Hendrik Alberts and Tobias Smuts Road (Terminus).</p>
+            <p><strong>First Bus To City:</strong> 05:55 AM</p>
+            <p><strong>Last Bus To City:</strong> 18:10 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:20 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:30</p>
+          </div>
+          <a href="LynnwoodManor.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 11 -->
+        <div class="route-card">
+          <h3>Route 11: Lynnwood Ridge</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Lenchen, Embankment, Gerhard, Glover, Rabie, Cradock, Trichardt, Snake Valley, Old
+                                        Johannesburg Road, Francis Baard and Bosman. </p>
+            <p><strong>ROUTE OUT:</strong> From Potgieter Street departure point in Pretorius Street just east of Paul Kruger. Via Pretorius
+                                          to Sophie du Bruyn, Kgosi Mampuru, Old Johannesburg Road, Trichardt, Snake Valley, Trichardt, Cradock,
+                                          Cantonment, Glover, Rabie, Jean, Lenchen.</p>
+            <p><strong>First Bus To City:</strong> 05:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 17:30 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:10</p>
+          </div>
+          <a href="LynnwoodRidge.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 12 -->
+        <div class="route-card">
+          <h3>Route 12:Meyerspark</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster and travel up to first circle in Southdowns (turnaround), left
+                                        along Nellmapius, right along Luton, right along Logan, left along Tegel, Oak, right along Witch-Hazel,
+                                        left along Olievenhoutbosch, left along John Vorster, left along N14, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade, left along Samrand, right at Tjunction, right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along
+                                                Waterberg, right along Lindani becoming Marudi, left along Waterberg, left along R55, left along N14,
+                                                left along John Vorster, turn right over the highway and travel along John Vorster up to the Terminus,
+                                                just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 04:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:15 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:25 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:15</p>
+          </div>
+          <a href="Meyerspark.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 13 -->
+        <div class="route-card">
+          <h3>Route 13:Monumentpark 1</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from Waterberg, turn right along Serenade, left along Samrand, right at T-Junction,
+                                        right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along
+                                        Lindani becoming Marudi, left along Waterberg, left along R55, right along Ruimte, right along Aletta, left
+                                        along Louisa, left along Rooihuiskraal, right along Ruimte, right along Saxby (Terminus) </p>
+                                                
+            <p><strong>ROUTE OUT:</strong> Depart from Lyttleton, right along Harvard, right along Blackwood, Galway, right along Hendrik
+                                        Verwoerd, right along Willem Botha circle, Ruimte, right along Chris Hougaard, left along Ruimte, left
+                                        along Rooihuiskraal, right along Louisa, right along Aletta, left along Ruimte, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+                                            
+            <p><strong>First Bus To City:</strong> 04:45 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:50 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:15 AM</p>
+            <p><strong>Last Bus From City:</strong> 16:35 PM</p>
+          </div>
+          <a href="Monumentpark1.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 14 -->
+        <div class="route-card">
+          <h3>Route 14: Monumentpark 2</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster, left along Nellmapius, Left Main, Botha Avenue Left Cantoment, Right
+                                       Jean Avenue to City</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade,Left Syphony,Right Serurubele, Samrand, right
+                                        along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along Lindani
+                                        becoming Marudi, left along Waterberg, left along R55, left along N14, left along John Vorster, turn right over
+                                        the highway and travel along John Vorster up to the Terminus, just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 05:00 AM</p>
+            <p><strong>Last Bus To City:</strong> 06:00 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:35 AM</p>
+            <p><strong>Last Bus From City:</strong> 15:40 PM</p>
+          </div>
+          <a href="Monumentpark2.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 15 -->
+        <div class="route-card">
+          <h3>Route 17:Moreleta Park</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Angvick, Fergus, Bruarfoss, Flora, Alaric, Kew, Bergen, Bruarfoss, Imatra, Olga, Myrdal,
+                                        Campbell, Viking, Vestness, Hugo, Vinstra, Magnus, Bodo, Fjord, Paul Kruger, further the same in an opposite
+                                        direction, except via Francis Baard to City. </p>
+            <p><strong>ROUTE OUT:</strong> From Pretorius between Thabo Sehume and Paul Kruger, via Pretorius, Sophie de Bruyn, Kgosi
+                                         Mampuru, Jan Smuts, Paul Kruger, Fjord (Terminus)</p>
+            <p><strong>First Bus To City:</strong> 05:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 18:10 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:30</p>
+          </div>
+          <a href="MoreletaPark.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 16 -->
+        <div class="route-card">
+          <h3>Route 16:Murrayfield</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Tobias Smuts Road, Johannes Bekker, Coenraad Brits, Johannes Bekker; further the same in
+                                        an opposite direction except via Kgosi Mampuru and Francis Baard to the city centre.</p>
+                                                
+            <p><strong>ROUTE OUT:</strong> From Pretorius Street between Thabo Sehume and Paul Kruger, via Pretorius, Sophie de Bruyn,
+                                        Kgosi Mampuru, Jan Smuts, Voortrekkerhoogte bypass, Voortrekker, De Wet, Voortrekker, Helwan, Bardia,
+                                        Hendrik Potgieter, Van Riebeeck, Henry Williams, Jacobus Jooste, Stephanus Schoeman, Frederik Ernst,
+                                        Andries Pretorius, Hendrik Alberts and Tobias Smuts Road (Terminus).</p>
+            <p><strong>First Bus To City:</strong> 05:55 AM</p>
+            <p><strong>Last Bus To City:</strong> 18:10 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:20 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:30</p>
+          </div>
+          <a href="Murrayfield.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 17 -->
+        <div class="route-card">
+          <h3>Route 17:Queenswood</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Lenchen, Embankment, Gerhard, Glover, Rabie, Cradock, Trichardt, Snake Valley, Old
+                                        Johannesburg Road, Francis Baard and Bosman. </p>
+            <p><strong>ROUTE OUT:</strong> From Potgieter Street departure point in Pretorius Street just east of Paul Kruger. Via Pretorius
+                                          to Sophie du Bruyn, Kgosi Mampuru, Old Johannesburg Road, Trichardt, Snake Valley, Trichardt, Cradock,
+                                          Cantonment, Glover, Rabie, Jean, Lenchen.</p>
+            <p><strong>First Bus To City:</strong> 05:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 17:30 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:10</p>
+          </div>
+          <a href="Queenswood.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 20 -->
+        <div class="route-card">
+          <h3>Route 20:Scientia</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster and travel up to first circle in Southdowns (turnaround), left
+                                        along Nellmapius, right along Luton, right along Logan, left along Tegel, Oak, right along Witch-Hazel,
+                                        left along Olievenhoutbosch, left along John Vorster, left along N14, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade, left along Samrand, right at Tjunction, right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along
+                                                Waterberg, right along Lindani becoming Marudi, left along Waterberg, left along R55, left along N14,
+                                                left along John Vorster, turn right over the highway and travel along John Vorster up to the Terminus,
+                                                just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 04:40 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:15 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:25 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:15</p>
+          </div>
+          <a href="Scientia.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 18 -->
+        <div class="route-card">
+          <h3>Route 18:Silverton 1</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from Waterberg, turn right along Serenade, left along Samrand, right at T-Junction,
+                                        right along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along
+                                        Lindani becoming Marudi, left along Waterberg, left along R55, right along Ruimte, right along Aletta, left
+                                        along Louisa, left along Rooihuiskraal, right along Ruimte, right along Saxby (Terminus) </p>
+                                                
+            <p><strong>ROUTE OUT:</strong> Depart from Lyttleton, right along Harvard, right along Blackwood, Galway, right along Hendrik
+                                        Verwoerd, right along Willem Botha circle, Ruimte, right along Chris Hougaard, left along Ruimte, left
+                                        along Rooihuiskraal, right along Louisa, right along Aletta, left along Ruimte, left along R55, left along
+                                        Waterberg and further with the existing route in.</p>
+                                            
+            <p><strong>First Bus To City:</strong> 04:45 AM</p>
+            <p><strong>Last Bus To City:</strong> 15:50 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:15 AM</p>
+            <p><strong>Last Bus From City:</strong> 16:35 PM</p>
+          </div>
+          <a href="Silverton1.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 19-->
+        <div class="route-card">
+          <h3>Route 19: Silverton 2</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Depart from John Vorster, left along Nellmapius, Left Main, Botha Avenue Left Cantoment, Right
+                                       Jean Avenue to City</p>
+            <p><strong>ROUTE OUT:</strong> Depart from Waterberg, turn right along Serenade,Left Syphony,Right Serurubele, Samrand, right
+                                        along Ikati, left along Cycad, Legong, Umhlume, right along Bohlale, left along Waterberg, right along Lindani
+                                        becoming Marudi, left along Waterberg, left along R55, left along N14, left along John Vorster, turn right over
+                                        the highway and travel along John Vorster up to the Terminus, just before Nellmapius.</p>
+            <p><strong>First Bus To City:</strong> 05:00 AM</p>
+            <p><strong>Last Bus To City:</strong> 06:00 AM</p>
+          
+            <p><strong>First Bus From City:</strong> 05:35 AM</p>
+            <p><strong>Last Bus From City:</strong> 15:40 PM</p>
+          </div>
+          <a href="Silverton2.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 20 -->
+        <div class="route-card">
+          <h3>Route 20: Silverton 3</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Jonathan, Wendy, Barend Spies, William Nichol, Gariep, Clarence, Jonathan, Dwyka and Lois;
+                                        further the same in an opposite direction except via Justice Mahomed, Scheiding and Bosman to the city
+                                        centre.</p>
+            <p><strong>ROUTE OUT:</strong>From Thabo Sehume Street between Pretorius and Francis Baard. Drives along Thabo
+                                        Sehume, left into Jeff Masemola, Rissik, Justice Mahomed, Florence Ribeiro, Main, Crown, Albert, Dely,
+                                        Garstfontein, Selati, Club, Matroosberg, Lois, Dwyka and Jonathan to just east of Clarence Street (Terminus)</p>
+            <p><strong>First Bus To City:</strong> 06:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 16:35 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 07:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:05 PM</p>
+          </div>
+          <a href="Silverton3.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 21 -->
+        <div class="route-card">
+          <h3>Route 21: Waterkloof Glen</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Jonathan, Wendy, Barend Spies, William Nichol, Gariep, Clarence, Jonathan, Dwyka and Lois;
+                                        further the same in an opposite direction except via Justice Mahomed, Scheiding and Bosman to the city
+                                        centre.</p>
+            <p><strong>ROUTE OUT:</strong>From Thabo Sehume Street between Pretorius and Francis Baard. Drives along Thabo
+                                        Sehume, left into Jeff Masemola, Rissik, Justice Mahomed, Florence Ribeiro, Main, Crown, Albert, Dely,
+                                        Garstfontein, Selati, Club, Matroosberg, Lois, Dwyka and Jonathan to just east of Clarence Street (Terminus)</p>
+            <p><strong>First Bus To City:</strong> 06:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 16:35 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 07:00 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:05 PM</p>
+          </div>
+          <a href="WaterkloofGlen.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 22 -->
+        <div class="route-card">
+          <h3>Route 22: Waterkloof Radge</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Klipbank, Peddie, Spartan, Selby, Klipbank, Vogel, Woody, Dennil, Turf, Tainton, Klipbank,
+                                        Barnard, Alandale, Boeing and Delmas Road; further the same in an opposite direction except via Park,
+                                        Meintjies, Kotze, Nelson Mandela and Pretorius to the city centre.</p>
+                                                
+            <p><strong>ROUTE OUT:</strong>  From Madiba Street between Bosman and Paul Kruger, via Madiba, Du Toit, Francis Baard,
+                                          Park, Leyds, Rissik, Justice Mahomed, Florence Ribeiro, Main, Kloof, Rigel, Eridanus, Pleiades, Jupiter,
+                                          Polaris, Neptune, Rigel, Schoongezicht, Cliff, Koedoesnek, Solomon Mahlangu, Boeing, Alandale, Barnard
+                                          and Klipbank (Terminus).</p>
+            <p><strong>First Bus To City:</strong> 05:30 AM</p>
+            <p><strong>Last Bus To City:</strong> 17:10 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:10 AM</p>
+            <p><strong>Last Bus From City:</strong> 18:00 PM</p>
+          </div>
+          <a href="WaterkloofRidge.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+        <!-- Route 23 -->
+        <div class="route-card">
+          <h3>Route 23: Wilgers Wapadrand</h3>
+          <div class="route-details">
+            <p><strong>ROUTE IN:</strong>Via Rossouw, Uitspan, Remskoen, Power, Verkenner, Kosmos, Swaardlelie and Rossouw;
+                                       further the same in an opposite direction except Park, Francis Baard, Steve Biko and Pretorius to the city
+                                        centre.</p>
+                                                
+            <p><strong>ROUTE OUT:</strong> From Madiba Street between Paul Kruger and Thabo Sehume, via Madiba, Du Toit, Francis
+                                         Baard, Park, Festival, Arcadia, Hilda, Park, Jan Shoba, Lynnwood, Camelia, Freesia, Hibiscus, Saligna,
+                                         Spitskop, Lezard, Susan Soendal, Piet Louw and Rossouw Street, east of Gordon Verster Road (Terminus)</p>
+            <p><strong>First Bus To City:</strong> 06:05 AM</p>
+            <p><strong>Last Bus To City:</strong> 16:10 PM</p>
+          
+            <p><strong>First Bus From City:</strong> 06:45 AM</p>
+            <p><strong>Last Bus From City:</strong> 17:05 PM</p>
+          </div>
+          <a href="WilgersWapadrand.html" class="card-link">Track Bus</a>
+          <button class="read-more">Read more</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.wrapper').classList.toggle('active');
+    }
+
+    // Read more buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.route-card').forEach(function(card){
+        var btn = card.querySelector('.read-more');
+        var details = card.querySelector('.route-details');
+        if (!btn || !details) return;
+        btn.addEventListener('click', function(){
+          var expanded = details.classList.toggle('expanded');
+          btn.textContent = expanded ? 'Read less' : 'Read more';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
