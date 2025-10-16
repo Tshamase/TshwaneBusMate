@@ -55,7 +55,7 @@ function loadRoutePoints() {
 
 // --- WebSocket and GPS Tracking ---
 const statusEl = document.getElementById('status');
-const ws = new WebSocket("wss://2a471f6a1f70.ngrok-free.app"); // Change to your ngrok domain
+const ws = new WebSocket("wss://8173e265a1fb.ngrok-free.app"); // Change to your ngrok domain
 
 //connection to server.js
 ws.onopen = () => {

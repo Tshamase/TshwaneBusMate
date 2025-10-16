@@ -10,7 +10,7 @@ let points = [];
 let bus;
 
 // Connect to WebSocket (GPS updates for bus)
-const ws = new WebSocket("wss://2a471f6a1f70.ngrok-free.app");
+const ws = new WebSocket("wss://8173e265a1fb.ngrok-free.app");
 
 // --- Load points from hidden <script> and animate ---
 function loadAndAnimate() {
