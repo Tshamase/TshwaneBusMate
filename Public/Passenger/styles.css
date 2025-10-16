@@ -80,18 +80,44 @@ nav.header-bar .logo h1 {
     width: 170vh;
 }
 
-/* Two-column split */
+/* Map and Schedule blocks */
 .map, .schedule {
     flex: 1 1 45%;
     min-width: 300px;
     padding: 20px;
+    box-sizing: border-box;
 }
 
+/* Map element */
 #map {
     width: 100%;
     height: 70vh;
     border-radius: 8px;
     overflow: hidden;
+}
+
+/* --- Mobile screens (up to 768px wide) --- */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .map, .schedule {
+        flex: 1 1 100%;
+        min-width: 100%;
+        padding: 15px;
+    }
+
+    #map {
+        height: 50vh; /* slightly shorter for small screens */
+    }
+}
+
+/* --- Large desktops --- */
+@media (min-width: 1200px) {
+    #map {
+        height: 80vh; /* bigger map for large screens */
+    }
 }
 
 /* Extra container */
