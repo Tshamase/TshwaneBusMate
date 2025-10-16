@@ -1,6 +1,22 @@
 -- Tshwane Bus Routes Database
 -- Based on information from https://www.tshwane.gov.za/?page_id=723
 
+-- Drop views if they exist (must drop views before tables)
+DROP VIEW IF EXISTS active_routes;
+DROP VIEW IF EXISTS route_details;
+DROP VIEW IF EXISTS todays_schedule;
+DROP VIEW IF EXISTS fare_prices;
+
+-- Drop tables if they exist (must drop child tables before parent tables due to foreign keys)
+DROP TABLE IF EXISTS fares;
+DROP TABLE IF EXISTS schedules;
+DROP TABLE IF EXISTS route_stops;
+DROP TABLE IF EXISTS routes;
+
+-- Drop database if it exists
+DROP DATABASE IF EXISTS tshwane_bus_routes;
+
+-- Create database and use it
 CREATE DATABASE IF NOT EXISTS tshwane_bus_routes;
 USE tshwane_bus_routes;
 
@@ -127,6 +143,7 @@ INSERT INTO schedules (route_id, direction, departure_time, weekday_type) VALUES
 (1, 'Inbound', '21:00:00', 'Weekday');
 
 -- Insert Sample Fares
+-- NOTE: Make sure stop_id values (1, 3, 8, 25, 32) match actual stop IDs generated in your DBMS.
 INSERT INTO fares (route_id, from_stop_id, to_stop_id, fare_amount, fare_type) VALUES
 (1, 1, 8, 15.50, 'Cash'),
 (1, 1, 8, 12.50, 'Card'),
