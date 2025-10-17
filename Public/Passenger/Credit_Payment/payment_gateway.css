@@ -62,7 +62,7 @@
             border-radius: 20px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
             cursor: pointer;
             margin-left: 20px;
@@ -278,7 +278,7 @@
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 20px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -308,14 +308,13 @@
         .copyright {
             margin-top: 0px;
             padding-top: 0px;
-            /*border-top: 1px solid rgba(255, 255, 255, 0.1);*/
             color: #aaa;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 500px) {
             main {
                 flex-direction: column;
-                padding: 1rem;
+                padding: 2.5rem;
             }
             
             .payment-container {

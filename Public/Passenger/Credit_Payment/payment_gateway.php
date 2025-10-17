@@ -82,19 +82,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    // If no errors, process payment (simulate)
+    // If no errors, process payment (redirect to PayFast)
     if (empty($errors)) {
-        // Here you would integrate with actual payment gateway
-        // For now, simulate success
-        $success = true;
-
-        // Store transaction details in session or database
-        $_SESSION['payment_success'] = true;
+        // Store transaction details in session
         $_SESSION['payment_amount'] = $totalAmount;
         $_SESSION['payment_action'] = $action;
 
-        // Redirect to success page
-        header("Location: Credit Wallet.php?status=success");
+        // Redirect to checkout.php for PayFast integration
+        header("Location: checkout.php");
         exit();
     }
 }
