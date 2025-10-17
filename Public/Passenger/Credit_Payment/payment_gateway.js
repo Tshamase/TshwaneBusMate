@@ -68,9 +68,6 @@
     var invoiceTotal = document.getElementById('invoiceTotal');
     var invoicePaying = document.getElementById('invoicePaying');
 
-    var paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
-    var pmCard = document.getElementById('pm-card');
-    var pmEft = document.getElementById('pm-eft');
     var proceedPay = document.getElementById('proceedPay');
 
     // --- Show/Hide fields when user picks action ---
@@ -287,24 +284,7 @@ function calculatePackageCredits(packageValue) {
       updateInvoice();
     });
 
-    // Payment method radio handling
-    paymentRadios.forEach(function (r) {
-      r.addEventListener('change', function () {
-        if (r.value === 'card' && r.checked) {
-          pmCard.classList.add('active');
-          pmEft.classList.remove('active');
-        } else if (r.value === 'eft' && r.checked) {
-          pmCard.classList.remove('active');
-          pmEft.classList.add('active');
-        }
-      });
-    });
 
-    // Clear errors on focus
-    ['cardNumber','cardName','cardExpiry','cardCvc','bankName','accountNumber','accountName','branchCode'].forEach(function(id){
-      var el = document.getElementById(id);
-      if (el) el.addEventListener('focus', function(){ clearFieldError(el); });
-    });
 
     // Validation and submit
     proceedPay.addEventListener('click', function () {
@@ -351,71 +331,11 @@ function calculatePackageCredits(packageValue) {
         return;
       }
 
-      var chosenPayment = null;
-      paymentRadios.forEach(function (r) {
-        if (r.checked) chosenPayment = r.value;
-      });
-      if (!chosenPayment) {
-        alert('Please choose a payment method (Card or EFT).');
-        return;
-      }
-
-      // Validate card details
-      if (chosenPayment === 'card') {
-        var cnEl = document.getElementById('cardNumber');
-        var cn = cnEl.value.trim();
-        var cnmEl = document.getElementById('cardName');
-        var cnm = cnmEl.value.trim();
-        var ceEl = document.getElementById('cardExpiry');
-        var ce = ceEl.value.trim();
-        var ccEl = document.getElementById('cardCvc');
-        var cc = ccEl.value.trim();
-
-        if (!cn) markInvalid(cnEl, 'Card number required.');
-        else if (!luhnCheck(cn)) markInvalid(cnEl, 'Invalid card number.');
-
-        if (!cnm) markInvalid(cnmEl, 'Cardholder name required.');
-
-        if (!ce) markInvalid(ceEl, 'Expiry required (MM/YY).');
-        else if (!validExpiry(ce)) markInvalid(ceEl, 'Invalid or expired date.');
-
-        if (!cc) markInvalid(ccEl, 'CVC required.');
-        else if (!/^\d{3,4}$/.test(cc)) markInvalid(ccEl, 'CVC must be 3-4 digits.');
-
-      } else { // EFT validations
-        var bnEl = document.getElementById('bankName');
-        var anEl = document.getElementById('accountNumber');
-        var ahEl = document.getElementById('accountName');
-        var bcEl = document.getElementById('branchCode');
-
-        var bn = bnEl.value.trim();
-        var an = anEl.value.trim();
-        var ah = ahEl.value.trim();
-        var bc = bcEl.value.trim();
-
-        if (!bn || bn.length < 2) markInvalid(bnEl, 'Enter bank name.');
-        if (!an || !/^\d{6,14}$/.test(an)) markInvalid(anEl, 'Account number should be 6-14 digits.');
-        if (!ah || ah.length < 2) markInvalid(ahEl, 'Enter account holder name.');
-        if (bc && !/^\d{3,6}$/.test(bc)) markInvalid(bcEl, 'Branch code should be 3-6 digits.');
-      }
-
-      if (firstInvalid) {
-        firstInvalid.focus();
-        return;
-      }
-
-      // Success handling
-      if (chosenPayment === 'card') {
-        alert('Payment successful!\n' + formatZAR(totalValue) + ' charged by Card.');
-        setTimeout(function () {
-          window.location.href = 'credit_wallet.html';
-        }, 500);
-      } else {
-        alert('EFT payment successful.');
-        setTimeout(function () {
-          window.location.href = 'credit_wallet.html';
-        }, 500);
-      }
+      // Success handling - simulate payment success without payment method
+      alert('Payment successful!\n' + formatZAR(totalValue) + ' processed.');
+      setTimeout(function () {
+        window.location.href = 'credit_wallet.html';
+      }, 500);
     });
 
     // FIXED: Ensure invoice updates on page load

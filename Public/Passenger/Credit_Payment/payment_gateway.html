@@ -89,87 +89,9 @@
         </div>
         <div id="invoicePaying" class="hidden"></div>
       </div>
+      <button id="proceedPay" class="btn-proceed" style="margin-top: 30px;">Proceed to Pay</button>
       </div>
     </form>
-    </div>
-
-    <!-- Right side: payment method chooser -->
-    <div class="payment-container">
-    <h2>Payment Options</h2>
-    <p style="margin-bottom: 20px; color: #aaa;">
-      Choose a payment method and enter details to proceed.
-    </p>
-
-    <div class="payment-methods">
-      <div class="payment-method">
-        <input type="radio" name="paymentMethod" value="card" id="cardRadio">
-        <label for="cardRadio">Card / Debit</label>
-      </div>
-      <div class="payment-method">
-        <input type="radio" name="paymentMethod" value="eft" id="eftRadio">
-        <label for="eftRadio">Bank Transfer (EFT)</label>
-      </div>
-    </div>
-
-    <!-- Card details -->
-    <div id="pm-card" class="payment-details">
-      <div class="form-group">
-        <label>Card number</label>
-        <input id="cardNumber" type="text" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456">
-        <div class="error-message" id="cardNumberError"></div>
-      </div>
-      <div class="form-group">
-        <label>Name on card</label>
-        <input id="cardName" type="text" placeholder="Cardholder name">
-        <div class="error-message" id="cardNameError"></div>
-      </div>
-      <div style="display: flex; gap: 10px;">
-        <div class="form-group" style="flex: 1;">
-          <label>Expiry (MM/YY)</label>
-          <input id="cardExpiry" type="text" maxlength="5" placeholder="MM/YY">
-          <div class="error-message" id="cardExpiryError"></div>
-        </div>
-        <div class="form-group" style="width: 100px;">
-          <label>CVC</label>
-          <input id="cardCvc" type="text" maxlength="4" placeholder="123">
-          <div class="error-message" id="cardCvcError"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EFT details -->
-    <div id="pm-eft" class="payment-details">
-      <div class="form-group">
-        <label>Bank</label>
-        <select id="bankName" name="bank-name">
-          <option value="" disabled selected>-- Choose option --</option>
-          <option value="sd-bank">Standard Bank</option>
-          <option value="ab-bank">Absa</option>
-          <option value="fnb-bank">FNB</option>
-          <option value="nd-bank">Nedbank</option>
-          <option value="cp-bank">Capitec</option>
-        </select>
-        <div class="error-message" id="bankNameError"></div>
-      </div>
-      <div class="form-group">
-        <label>Account number</label>
-        <input id="accountNumber" type="text" maxlength="11" placeholder="1234567890">
-        <div class="error-message" id="accountNumberError"></div>
-      </div>
-      <div class="form-group">
-        <label>Account holder</label>
-        <input id="accountName" type="text" maxlength="25" placeholder="Account holder name">
-        <div class="error-message" id="accountNameError"></div>
-      </div>
-      <div class="form-group">
-        <label>Branch code</label>
-        <input id="branchCode" type="text" maxlength="6" placeholder="Branch code">
-        <div class="error-message" id="branchCodeError"></div>
-      </div>
-      <small style="color: #aaa">You will be shown EFT instructions after submitting.</small>
-    </div>
-
-    <button id="proceedPay" class="btn-proceed">Proceed to Pay</button>
     </div>
   </main>
 
