@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PHP Form Validation</title>
+<style>	
+	.error {color:res;}
+	.success {color:green;}	
+</style>
+</head>
+<body>
+<?PHP
+// initial variables
+$name = $email = $age = "";
+$nameErr = $emailErr =$ageErr = "";
+$successMessage = "";
+
+
+//Form submission handling
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+
+// Validate name
+if (empty($_POST["name"])){
+	$name = htmlspecialchars(trim($_POST["name"]));
+	if (!preg_match("/^[a-zA-Z]*$/",$name)){
+		$nameErr = "Only Letters and spaces allowed";
+	}
+}
+
+// Validate email
+if (empty($_POST["email"])){
+		$emailErr = "Email is required";
+	}else{
+		$email = filter_var(trim$_POST["email"]), FILTER_SANITIZE_EMAIL);
+		if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+			$emailErr = "Invalid email format";
+		}	
+	}
+
+// Validate age
+if (empty($_POST["age"])){
+		$ageErr = 
+
+
+
+
+
+
+
+
+
+</html>
