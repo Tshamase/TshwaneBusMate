@@ -10,7 +10,7 @@ let points = [];
 let bus;
 
 // Connect to WebSocket (GPS updates for bus)
-const ws = new WebSocket("wss://8173e265a1fb.ngrok-free.app");
+const ws = new WebSocket("ws://localhost:3000"); //website link or localhost
 
 // --- Load points from hidden <script> and animate ---
 function loadAndAnimate() {
@@ -57,7 +57,7 @@ function loadAndAnimate() {
 
                 // update bus marker position
                 bus.setLatLng([data.latitude, data.longitude]);
-                map.setView([data.latitude, data.longitude], 15);
+                map.setView([data.latitude, data.longitude], 13);
             } catch (err) {
                 console.error("Bad JSON:", event.data, err);
             }

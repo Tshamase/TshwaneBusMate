@@ -55,7 +55,7 @@ function loadRoutePoints() {
 
 // --- WebSocket and GPS Tracking ---
 const statusEl = document.getElementById('status');
-const ws = new WebSocket("wss://8173e265a1fb.ngrok-free.app"); // Change to your ngrok domain
+const ws = new WebSocket("ws://localhost:3000"); // Change to your ngrok domain or localhost
 
 //connection to server.js
 ws.onopen = () => {
@@ -77,7 +77,7 @@ ws.onopen = () => {
                     // Update driver marker on map
                     if (driverMarker) {
                         driverMarker.setLatLng([data.latitude, data.longitude]);
-                        map.setView([data.latitude, data.longitude], 15);
+                        map.setView([data.latitude, data.longitude], 13);
                     }
                     
                     // Send to server
