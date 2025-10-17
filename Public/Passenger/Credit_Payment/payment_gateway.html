@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TshwaneBusMate - Payment Gateway</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="payment_gateway.css">
+  </head>
+  <body>
+  <!-- Page header -->
+  <header>
+    <div class="header-container">
+        <div class="logo">
+            <h1>TshwaneBusMate</h1>
+        </div>
+        <button class="back-button" onclick="window.location.href='credit_wallet.html'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left side: form for choosing action -->
+    <div class="content-container">
+    <h2>Payment Gateway</h2>
+
+    <form id="invoicePayment" method="post" action="payment_gateway.php">
+      <div class="form-group">
+      <label for="actionSelect">Choose action</label>
+      <select id="actionSelect" name="action" required>
+        <option value="" disabled selected>-- Select an option --</option>
+        <option value="reload">Reload credits (Add to balance)</option>
+        <option value="purchase">Purchase product</option>
+      </select>
+      </div>
+
+      <!-- Reload fields -->
+      <div id="reloadFields" class="hidden">
+      <div class="form-group">
+        <label for="reloadAmount">Reload amount (ZAR)</label>
+        <input
+          id="reloadAmount"
+          name="reloadAmount"
+          type="number"
+          min="11"
+          max="3000"
+          step="0.01"
+          placeholder="Enter amount"
+        />
+      </div>
+      </div>
+
+      <!-- Purchase fields -->
+      <div id="purchaseFields" class="hidden">
+      <div class="form-group">
+        <label>Select product(s)</label>
+        <div id="packageList">
+          <div class="packageItem">
+            <select name="product[]" required>
+              <option value="" disabled selected>-- Choose product --</option>
+              <option value="20">Connector 20 - ZAR 20.00</option>
+              <option value="60">Connector 60 - ZAR 60.00</option>
+              <option value="80">Connector 80 - ZAR 80.00</option>
+              <option value="100">Connector 100 - ZAR 100.00</option>
+              <option value="150">Connector 150 - ZAR 150.00</option>
+              <option value="200">Connector 200 - ZAR 200.00</option>
+              <option value="350">Connector 350 - ZAR 350.00</option>
+              <option value="500">Connector 500 - ZAR 500.00</option>
+            </select>
+            <button type="button" class="btn-remove">Remove</button>
+          </div>
+        </div>
+        <div class="package-controls">
+          <button type="button" id="addPackageBtn" class="btn-add">Add package</button>
+          <small style="color: #aaa">You may add up to 3 packages</small>
+        </div>
+      </div>
+      </div>
+
+    <!-- Invoice Summary -->
+      <div style="margin-top: 30px;">
+      <a href="#" id="toggleInvoiceLink" class="toggle-link hidden">View invoice</a>
+      <div id="invoiceSummary" class="invoice hidden">
+        <h3>Invoice</h3>
+        <ul id="invoiceItems"></ul>
+        <div class="total">
+        <span>Total</span><span id="invoiceTotal">ZAR 0.00</span>
+        </div>
+        <div id="invoicePaying" class="hidden"></div>
+      </div>
+      </div>
+    </form>
+    </div>
+
+    <!-- Right side: payment method chooser -->
+    <div class="payment-container">
+    <h2>Payment Options</h2>
+    <p style="margin-bottom: 20px; color: #aaa;">
+      Choose a payment method and enter details to proceed.
+    </p>
+
+    <div class="payment-methods">
+      <div class="payment-method">
+        <input type="radio" name="paymentMethod" value="card" id="cardRadio">
+        <label for="cardRadio">Card / Debit</label>
+      </div>
+      <div class="payment-method">
+        <input type="radio" name="paymentMethod" value="eft" id="eftRadio">
+        <label for="eftRadio">Bank Transfer (EFT)</label>
+      </div>
+    </div>
+
+    <!-- Card details -->
+    <div id="pm-card" class="payment-details">
+      <div class="form-group">
+        <label>Card number</label>
+        <input id="cardNumber" type="text" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456">
+        <div class="error-message" id="cardNumberError"></div>
+      </div>
+      <div class="form-group">
+        <label>Name on card</label>
+        <input id="cardName" type="text" placeholder="Cardholder name">
+        <div class="error-message" id="cardNameError"></div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Expiry (MM/YY)</label>
+          <input id="cardExpiry" type="text" maxlength="5" placeholder="MM/YY">
+          <div class="error-message" id="cardExpiryError"></div>
+        </div>
+        <div class="form-group" style="width: 100px;">
+          <label>CVC</label>
+          <input id="cardCvc" type="text" maxlength="4" placeholder="123">
+          <div class="error-message" id="cardCvcError"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFT details -->
+    <div id="pm-eft" class="payment-details">
+      <div class="form-group">
+        <label>Bank</label>
+        <select id="bankName" name="bank-name">
+          <option value="" disabled selected>-- Choose option --</option>
+          <option value="sd-bank">Standard Bank</option>
+          <option value="ab-bank">Absa</option>
+          <option value="fnb-bank">FNB</option>
+          <option value="nd-bank">Nedbank</option>
+          <option value="cp-bank">Capitec</option>
+        </select>
+        <div class="error-message" id="bankNameError"></div>
+      </div>
+      <div class="form-group">
+        <label>Account number</label>
+        <input id="accountNumber" type="text" maxlength="11" placeholder="1234567890">
+        <div class="error-message" id="accountNumberError"></div>
+      </div>
+      <div class="form-group">
+        <label>Account holder</label>
+        <input id="accountName" type="text" maxlength="25" placeholder="Account holder name">
+        <div class="error-message" id="accountNameError"></div>
+      </div>
+      <div class="form-group">
+        <label>Branch code</label>
+        <input id="branchCode" type="text" maxlength="6" placeholder="Branch code">
+        <div class="error-message" id="branchCodeError"></div>
+      </div>
+      <small style="color: #aaa">You will be shown EFT instructions after submitting.</small>
+    </div>
+
+    <button id="proceedPay" class="btn-proceed">Proceed to Pay</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+      <div class="copyright">Copyright &copy; 2025 City of Tshwane. All rights reserved.</div>
+  </footer>
+
+<script src="payment_gateway.js"></script>
+  </body>
+</html>
