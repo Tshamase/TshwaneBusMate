@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'Database.php';
+include 'db_payment.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {
@@ -180,8 +180,8 @@ $username = $_SESSION['user'];
             <?php
             // Fetch transaction history for the logged-in user
             $userId = 1; // This should be dynamically set based on session
-            
-            $query = "SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date DESC";
+
+            $query = "SELECT * FROM transactions WHERE user_id = ? AND transaction_type IS NOT NULL ORDER BY transaction_date DESC";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $userId);
             $stmt->execute();
