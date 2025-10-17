@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Driver Timetable</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0d1b24;
+      color: #fff;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #27ae60;
+      text-transform: uppercase;
+    }
+
+    .timetable {
+      width: 100%;
+      border-collapse: collapse;
+      margin: auto;
+      overflow-x: auto;
+    }
+
+    .timetable th, .timetable td {
+      border: 1px solid #2c3e50;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .timetable th {
+      background-color: #1a2f3a;
+      color: #FFD700;
+    }
+
+    .timetable td {
+      background-color: #12232e;
+    }
+
+    .highlight {
+      background-color: #27ae60;
+      color: #fff !important;
+      font-weight: bold;
+    }
+
+    .route {
+      color: #27F531;
+      font-weight: bold;
+    }
+
+    .time {
+      color: #f1c40f;
+    }
+
+    @media (max-width: 768px) {
+      .timetable th, .timetable td {
+        font-size: 0.85rem;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Driver Timetable (Mon - Fri)</h1>
+
+  <table class="timetable" id="timetable">
+  <tbody>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+      </tr>
+    </thead>
+    <tr>
+		<td class="time">05:30</td>
+		<td class="route">Centurion</td>
+		<td class="route">Valhalla</td>
+		<td class="route">Olievenhoutbosch</td>
+		<td class="route">Wierdpark</td>
+		<td class="route">Voortrekkerhoogte</td>
+	</tr>
+  <tr>
+    <td class="time">06:15</td>
+    <td class="route">Voortrekkerhoogte</td>
+    <td class="route">Centurion</td>
+    <td class="route">-</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Route 9</td>
+  </tr>
+  <tr>
+    <td class="time">07:00</td>
+    <td class="route">Route 9</td>
+    <td class="route">Centurion</td>
+    <td class="route">West Park 7</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Wierdpark</td>
+  </tr>
+  <tr>
+    <td class="time">08:00</td>
+    <td class="route">Centurion</td>
+    <td class="route">Route 9</td>
+    <td class="route">Voortrekkerhoogte</td>
+    <td class="route">Valhalla</td>
+    <td class="route">Olievenhoutbosch</td>
+  </tr>
+  <tr>
+    <td class="time">09:00</td>
+    <td>-</td>
+    <td class="route">Voortrekkerhoogte</td>
+    <td>-</td>
+    <td class="route">Centurion</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td class="time">10:30</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Wierdpark</td>
+    <td class="route">-</td>
+    <td class="route">Route 9</td>
+    <td class="route">Valhalla</td>
+  </tr>
+  <tr>
+    <td class="time">12:00</td>
+    <td class="route">Valhalla</td>
+    <td class="route">Centurion</td>
+   <td><a href="Garsfontein.html" class="route">Garsfontein 2</a></td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Route 9</td>
+  </tr>
+  <tr>
+    <td class="time">13:00</td>
+    <td class="route">Valhalla</td>
+    <td>-</td>
+    <td class="route">Route 9</td>
+    <td>-</td>
+    <td class="route">Voortrekkerhoogte</td>
+  </tr>
+  <tr>
+    <td class="time">14:30</td>
+    <td class="route">Centurion</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Wierdpark</td>
+    <td class="route">Route 9</td>
+    <td class="route">Centurion</td>
+  </tr>
+  <tr>
+    <td class="time">16:00</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Centurion</td>
+    <td class="route">Valhalla</td>
+    <td class="route">Route 9</td>
+    <td class="route">Centurion</td>
+  </tr>
+  <tr>
+    <td class="time">17:30</td>
+    <td class="route">Voortrekkerhoogte</td>
+    <td class="route">Valhalla</td>
+    <td class="route">Olievenhoutbosch</td>
+    <td class="route">Wierdpark</td>
+    <td class="route">Route 9</td>
+  </tr>
+</tbody>
+  </table>
+
+  <script>
+    // Highlight current day column (Monday = 1, Sunday = 0)
+    const currentDay = new Date().getDay(); // 1 = Monday, ..., 5 = Friday
+    const table = document.getElementById('timetable');
+
+    if (currentDay >= 1 && currentDay <= 5) {
+      const columnIndex = currentDay; // Matches th index
+      const rows = table.rows;
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].cells[columnIndex]) {
+          rows[i].cells[columnIndex].classList.add('highlight');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
