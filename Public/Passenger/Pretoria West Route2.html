@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tshwane Bus Routes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+   * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+      color: #f0f0f0;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: -1;
+    }
+
+    .menu-toggle {
+        position: fixed;
+        top: 30px;
+        left: 20px;
+        font-size: 24px;
+        color: #27ae60;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -220px;
+        width: 200px;
+        height: 100vh;
+        background: #0d1b24;
+        padding: 30px 0;
+        transition: left 0.3s ease;
+        z-index: 999;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .wrapper.active .sidebar { left: 0; }
+
+    .sidebar h2 {
+        color: #FFD700;
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.3s ease;
+    }
+    .sidebar ul li a {
+        color: #fafafc;
+        text-decoration: none;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+    .sidebar ul li:hover { background: rgba(255,255,255,0.05); }
+    .sidebar ul li:hover a { color: #27ae60; }
+
+    nav.header-bar {
+        width: 100%;
+        height: 15vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 40px;
+        color: white;
+        background: linear-gradient(135deg, #000, #0d1b24);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: fixed;
+        top: 0;
+        z-index: 100;
+    }
+
+    nav.header-bar .logo h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Main content styles (keep your card styles, just update colors for dark bg) */
+    .section {
+      max-width: 1100px;
+      margin: 15vh auto 0;
+      padding: 20px;
+    }
+    .section h2 {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #27F531;
+      border-bottom: 2px solid #27F531;
+      padding-bottom: 5px;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .route-card {
+      background-color: #1a2f3a;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      padding: 20px;
+      transition: transform 0.2s ease;
+      color: #fff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .route-card:hover {
+      transform: scale(1.02);
+      background: #22384a;
+    }
+    .route-card h3 {
+      color: #27F531;
+      margin-bottom: 10px;
+    }
+    .route-card p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+    .card-link {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background-color: #27F531;
+      color: #222;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .card-link:hover {
+      background-color: #1dbf2f;
+      color: #fff;
+    }
+
+    /* Read more/collapse */
+    .route-details {
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      max-height: 7.5rem; /* collapsed height */
+    }
+    .route-details.expanded {
+      max-height: 2000px;
+    }
+    .read-more {
+      margin-top: 12px;
+      align-self: flex-start;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .read-more:hover {
+      border-color: #27F531;
+      color: #27F531;
+    }
+
+    /* small screens tweak */
+    @media (max-width: 480px) {
+      .route-details { max-height: 9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <div class="wrapper">
+    <!-- Sidebar (from login.html) -->
+    <div class="sidebar">
+      <h2>TBM</h2>
+      <ul>
+        <li><a href="home.html"><i class="fa-solid fa-house"></i>  Home</a></li>
+        <li><a href="#"><i class="fa-solid fa-bus"></i>  About</a></li>
+        <li><a href="#"><i class="fa-solid fa-comments"></i>  Inquiries</a></li>
+      </ul>
+    </div>
+
+    <!-- Header Bar (from login.html) -->
+    <nav class="header-bar">
+      <div class="logo">
+        <h1>TSHWANE<span>BUSMATE</span></h1>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="section">
+      <h2>Available Bus Routes</h2>
+      <div class="card-container">
+	  
+	   <!-- Route 1-->
+        <div class="route-card">
+          <h3>Route 1: Booysens</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Luderitz, Beacon, Attie, Boekenhoutkloof, further the same in an opposite direction </p>
+		  <p><strong>ROUTE OUT:</strong> From Pretorius between Bosman and Paul Kruger, via Pretorius, Kgosi Mampuru, WF
+										 Nkomo, Es’kia Mphahlele, Van der Hoff, Hendrik, Jennings, Redelinghuys, Van Riebeeck, Claremont,
+										 Market, Plaas, Boekenhoutkloof (Terminus, cnr Luderitz and Boekenhoutkloof Street)</p>
+         
+		 <p><strong>First Bus To City:</strong> 06:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:40 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:35 PM</p>
+		  </div>
+		  
+          <a href="Booysens.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 2-->
+        <div class="route-card">
+          <h3>Route 2: Erasmia 2</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Helena, Elzina, Andries du Plessis, Main, Grey, Fortuna, Vrolik-spruit, Leenhof, Moeder,
+										Aletta, Willem Erasmus, Main, Quagga, Trans Oranje, Oliewen, Charlotte Maxeke, Buitenkant, Soutter, Nana
+										Sita up until the corner of Nana Sita and Bosman Street left along Bosman till Pretorius Street.</p>
+										
+		  <p><strong>ROUTE OUT:</strong>From Pretorius between Paul Kruger and Thabo Sehume, via Pretorius, Sophie De Bruyn,
+										Nana Sita, Charlotte Maxeke, Oliewen, Trans Oranje, Quagga, Main, Helena Street (Terminus).</p>
+          <p><strong>First Bus To City:</strong> 05:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 17:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 06:05 AM</p>
+          <p><strong>Last Bus From City:</strong> 17:35 PM</p>
+		  </div>
+		  
+          <a href="Erasmia2.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 3-->
+        <div class="route-card">
+          <h3>Route 3: Erasmia 3</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Cuprene, 19th Avenue, Emerald, Bengal, Himalaya, Kathmandu, Bengal, 1st Avenue,
+										Quagga, Charlotte Maxeke, Buitenkant, Soutter, Nana Sita, until the corner of Nana Sita and Bosman
+										Street left along Bosman till Pretorius Street.</p>
+										
+		  <p><strong>ROUTE OUT:</strong> From Pretorius between Paul Kruger and Thabo Sehume, via Pretorius, Sophie De Bruyn,
+                                         Nana Sita, Charlotte Maxeke, Quagga, bypass to Laudium, 2nd Avenue, Cuprene west of 2nd Avenue
+                                         (Terminus).</p>
+										
+          <p><strong>First Bus To City:</strong> 06:25 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:50 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:40 PM</p>
+          </div>
+		  
+		  <a href="Erasmia3.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 4-->
+        <div class="route-card">
+          <h3>Route 4: Danville 1</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Van den Berg, Strachan, Martini Henry, Veldkanon, Longtom, Mike du Toit,
+										Schneider, Frontvuur, Steyr, Mike du Toit, Nordenfelt, Armstrong, Martini Henry, Strachan, Van
+										Jaarsveld and Albertyn; further the same in an opposite direction.</p>
+									   
+		  <p><strong>ROUTE OUT:</strong>From Pretorius Street between Bosman and Paul Kruger, via Pretorius, Kgosi
+										Mampuru, WF Nkomo, Transoranje, Ashley, Albertyn, south of Van den Berg (Terminus) </p>
+          <p><strong>First Bus To City:</strong> 06:10 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:45 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:35 PM</p>
+		  </div>
+		  
+          <a href="Danville1.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 5-->
+        <div class="route-card">
+          <h3>Route 5: Danville (2),(3)</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Pretoria West Hospital, Sytze Wierda, Morkel, Staatsartillerie, Sytze Wierda and Morkel; further
+										the same in an opposite direction.</p>
+
+		  <p><strong>ROUTE OUT:</strong>From Pretorius Street between Bosman and Paul Kruger, via Pretorius, Kgosi Mampuru
+										(Potgieter), WF Nkomo (Church), Transoranje, Ashley, Dan, Ferris, Van Broekhuizen, Osler, Marsburg, Morkel,
+										Sytze Wierda and Pretoria West Hospital (Terminus).</p>
+          <p><strong>First Bus To City:</strong> 05:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:30 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:35 PM</p>
+		  </div>
+		  
+          <a href="Danville(2)(3).html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 6-->
+        <div class="route-card">
+          <h3>Route 6: Danville 2_4</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Pretoria West Hospital, Sytze Wierda, Morkel, Staatsartillerie, Sytze Wierda and Morkel; further
+										the same in an opposite direction</p>
+										
+		  <p><strong>ROUTE OUT:</strong> From Pretorius Street between Bosman and Paul Kruger, via Pretorius, Kgosi Mampuru, WF
+										 Nkomo, Transoranje, Ashley, Dan, Ferris, Van Broekhuizen, Osler, Marsburg, Morkel, Sytze Wierda and
+										 Pretoria West Hospital (Terminus).</p>
+          <p><strong>First Bus To City:</strong> 05:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:30 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:35</p>
+		  </div>
+		  
+          <a href="Danville2_4.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 7-->
+		 <div class="route-card">
+			<h3>Route 7:Danvill 5</h3>
+			<div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Morkel, Staatsartillerie, Bergartillerie, Gideon Scheepers, Grunberg, Hoffman, Bergartillerie,
+									   Van Dam, Norman Eaton, Tom Claridge, Norman Eaton, Morkel, Jan Henkelmann, Charles Obermeyer,
+									    Diplomandi, Staatsartillerie and Morkel; further the same in an opposite direction.</p>
+										
+		  <p><strong>ROUTE OUT:</strong>From Pretorius Street between Bosman and Paul Kruger, Kgosi Mampuru, WF Nkomo,
+										  Transoranje, Ashley, Dan, Ferris, Van Broekhuizen, Osler, Marsburg and Morkel just south of Staatsartillerie
+                                          Road (Terminus)</p>
+          <p><strong>First Bus To City:</strong> 05:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:00 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:55 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:25 PM</p>
+		  </div>
+		  
+          <a href="Danville5.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 8-->
+        <div class="route-card">
+          <h3>Route 8: Denville 6</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong> From Van den Berg, right along Mahope, which becomes Mokokole, which becomes Ikhambi,
+										right along Mahope, left along Van den Berg, right along Sekelgras opposite Steyr, right along Strachan, left
+										along Schmidt, right along Albertyn, left along Ashley, right along Transoranje, left along WF Nkomo up to the
+										city</p>
+		 
+		 <p><strong>ROUTE OUT:</strong>  Pretorius between Paul Kruger and Bosman, right along Kgosi Mampuru, left along WF
+										Nkomo, right along Transoranje, left along Ashley, right along Albertyn, left along Schmidt, right along
+										Strachan, left along Sekelgras, left along Van den Berg (terminus)</p>
+          
+		  <p><strong>First Bus To City:</strong> 05:50 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:20 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:35 PM</p>
+		  </div>
+		  
+          <a href="Danville6.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 9-->
+        <div class="route-card">
+          <h3>Route 9: Tuine 1</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Diamond, Mineral, Klopper and Louise Street; further the same in an opposite direction</p>
+										
+		  <p><strong>ROUTE OUT:</strong> From Pretorius Street between Bosman and Paul Kruger, via Pretorius, Kgosi Mampuru, WF
+										Nkomo, Es’kia Mphahlele, Van der Hoff, Schurmanns, Lotty, Weir, Tuin, Louise and Diamond Street
+										(Terminus)</p>
+										
+          <p><strong>First Bus To City:</strong> 05:35 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:50 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:30 PM</p>
+		  </div>
+		  
+          <a href="Tuine1.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 10-->
+        <div class="route-card">
+          <h3>Route 10: Tuine 2</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Luderitz, Hjalmer, Theo Slabbert, Commercial, further the same in an opposite direction.</p>
+		  
+		  <p><strong>ROUTE OUT:</strong> From Pretorius between Bosman and Paul Kruger, via Pretorius, Kgosi Mampuru, WF Nkomo,
+										 Es’kia Mphahlele, Van der Hoff, Schurmanns, Alter, Ernest, Tuin, Commercial, Luderitz (Terminus).</p>
+          
+		  <p><strong>First Bus To City:</strong> 05:00 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:55 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:45 PM</p>
+		  </div>
+		  
+          <a href="Tuine2.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 11-->
+        <div class="route-card">
+          <h3>Route 11: West Park 1</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Kraai Street, Mahem, Reier, Waterbok, Rod and Van Dalsen; further the same in an
+									   opposite direction except via Soutter, Nana Sita up until the corner of Nana Sita and Bosman Street left
+										along Bosman till Pretorius Street.</p>
+		  
+		  <p><strong>ROUTE OUT:</strong>From Pretorius Street between Paul Kruger and Thabo Sehume, via Pretorius, Sophie De
+										Bruyn, Nana Sita, Charlotte Maxeke, Oliewen, Cobalt, Mica, Oliewen, Middle Crescent, Iscor, Inner
+										Crescent, Van Dalsen, Rod and Kraai (Terminus)</p>
+         
+		 <p><strong>First Bus To City:</strong> 06:00 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:20 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:30 PM</p>
+		  </div>
+		  
+          <a href="WestPark1.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 12-->
+        <div class="route-card">
+          <h3>Route 12: West Park 2</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Tobias Smuts Road, Johannes Bekker, Coenraad Brits, Johannes Bekker; further the same in
+										an opposite direction except via Kgosi Mampuru and Francis Baard to the city centre.</p>
+										
+		  <p><strong>ROUTE OUT:</strong>Via Bosbok, Valk, Middle Crescent and Iscor; further the same in an opposite direction.</p>
+          <p><strong>First Bus To City:</strong> 06:55 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:10 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 05:05 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:30 PM</p>
+		  </div>
+		  
+          <a href="WestPark2.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 13-->
+		 <div class="route-card">
+			<h3>Route 13: West Park 6</h3>
+			<div class="route-details">
+          <p><strong>ROUTE IN:</strong>From Manhatting flats, Mhiri, WF Nkomo, Kgosi Mampuru and Madiba to
+										the city centre. </p>
+		  <p><strong>ROUTE OUT:</strong> From Pretorius Street between Paul Kruger and Bosman, via Pretorius,
+										 Kgosi Mampuru, WF Nkomo and Mhiri up to Manhatting flats.</p>
+          <p><strong>First Bus To City:</strong> 14:30 AM</p>
+		  <p><strong>Last Bus To City:</strong> 16:45 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 06:30 AM</p>
+          <p><strong>Last Bus From City:</strong> 17:15 PM</p>
+		  </div>
+		  
+          <a href="WestPark6.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+		
+		<!-- Route 14-->
+        <div class="route-card">
+          <h3>Route 14: West Park 7</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Cyme Crescent, Nyiko, Randu, Ruth First, Citron, Anthesis, Bergamot, Festura, Flindersia,
+										Festura and Anthesis; further the same in an opposite direction.</p>
+		  <p><strong>ROUTE OUT:</strong> From Pretorius Street between Paul Kruger and Thabo Sehume, via Pretorius, Kgosi Mampuru,
+										 WF Nkomo, Acridian, Anthesis and Cyme Crescent, north of Anthesis (Terminus).</p>
+          <p><strong>First Bus To City:</strong> 04:40 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:20 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:50 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:40 PM</p>
+		  </div>
+		  
+          <a href="WestPark7.html" class="card-link">Track Bus</a>
+		 <button class="read-more">Read more</button>
+	   </div>
+		
+		<!-- Route 15-->
+        <div class="route-card">
+          <h3>Route 15: West Park 8</h3>
+		  <div class="route-details">
+          <p><strong>ROUTE IN:</strong>Via Citron, Govan Mbeki, Rolihlahla Mandela, Joe Slovo, Ruth First, Citron and WF Nkomo to
+										the city centre </p>
+										
+		  <p><strong>ROUTE OUT:</strong> From Pretorius Street between Paul Kruger and Thabo Sehume, via Pretorius, Kgosi
+										 Mampuru, WF Nkomo and Citron to just before Ruth (Terminus)</p>
+										
+          <p><strong>First Bus To City:</strong> 05:30 AM</p>
+		  <p><strong>Last Bus To City:</strong> 18:20 PM</p>
+		  
+		  <p><strong>First Bus From City:</strong> 04:30 AM</p>
+          <p><strong>Last Bus From City:</strong> 18:45 PM</p>
+          </div>
+		  
+		  <a href="WestPark8.html" class="card-link">Track Bus</a>
+		   <button class="read-more">Read more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+       function toggleSidebar() {
+      document.querySelector('.wrapper').classList.toggle('active');
+    }
+
+    // Read more buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.route-card').forEach(function(card){
+        var btn = card.querySelector('.read-more');
+        var details = card.querySelector('.route-details');
+        if (!btn || !details) return;
+        btn.addEventListener('click', function(){
+          var expanded = details.classList.toggle('expanded');
+          btn.textContent = expanded ? 'Read less' : 'Read more';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
