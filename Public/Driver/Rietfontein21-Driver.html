@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Rietfontien 21 Driver</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="routes.css">
 	<!--Leaflet library map styling and script-->
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -12,34 +12,49 @@
   	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>  
-	<nav class="header-bar">
-		<div class="logo">
-			<h1>TSHWANEBUSMATE</h1>
-		</div>
-	</nav>
-	<!--Legend for whether or not cerain times are active, delayed or not comming-->
-	<div class="key-table">
-		<h4>Legend</h4>
-
-		<ul>
-			<li><span class="red"></span> Not Coming</li>
-			<li><span class="green"></span> Coming</li>
-			<li><span class="orange"></span> Delayed</li>
-		</ul>
+	<div class="menu-toggle" onclick="toggleSidebar()">
+		<i class="fa-solid fa-bars"></i>
 	</div>
 
-		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
-		
-		<!--Leaflet map display-->
-		<div class="page1">
-			<div class="map">
-				<h1>Driver / Bus Page</h1>
-				<p id="status">Connecting to server...</p>
-				<h2>Rietfontien (21) Map:</h2>
-			<div id="map"></div>
+	<div class="wrapper">
+		<div class="sidebar">
+			<h2>TBM</h2>
+			<ul>
+			<li><a href=""><i class="fa-solid fa-house"></i>Home</a></li>
+			<li><a href=""><i class="fa-solid fa-map-location"></i>Schedule</a></li>
+			</ul>
+		</div> 
+
+		<nav class="header-bar">
+			<div class="logo">
+				<h1>TSHWANEBUSMATE</h1>
+			</div>
+		</nav>
+		<!--Legend for whether or not cerain times are active, delayed or not comming-->
+		<div class="key-table">
+			<h4>Legend</h4>
+
+			<ul>
+				<li><span class="red"></span> Not Coming</li>
+				<li><span class="green"></span> Coming</li>
+				<li><span class="orange"></span> Delayed</li>
+			</ul>
+		</div>
+
+			<div id="back"><a href="Drivers TimeTable.html">Back to Schedule</a></div>
+			
+			<!--Leaflet map display-->
+			<div class="page1">
+				<div class="map">
+					<h1>Driver / Bus Page</h1>
+					<p id="status">Connecting to server...</p>
+					<h2>Rietfontien (21) Map:</h2>
+				<div id="map"></div>
+				</div>
 			</div>
 		</div>
 
@@ -121,6 +136,20 @@
 
 	<!--Time animation legend script-->
 	<script src="legend.js"></script>
+
+	<script>
+		function toggleSidebar() {
+			document.querySelector('.wrapper').classList.toggle('active');
+		}
+		window.addEventListener('click', function(e) {
+			const wrapper = document.querySelector('.wrapper');
+			const sidebar = document.querySelector('.sidebar');
+			const toggle = document.querySelector('.menu-toggle');
+			if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+			wrapper.classList.remove('active');
+			}
+		});
+	</script>
 
 	<!--Combined driver script - handles map display AND GPS sending-->
 	<script src="driver-map-and-gps.js"></script>

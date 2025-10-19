@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Meyerspark</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="routes.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 	<!--Leaflet library map styling and script-->
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,105 +12,144 @@
   	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
-	<nav class="header-bar">
-		<div class="logo">
-			<h1>TSHWANEBUSMATE</h1>
-		</div>
-	</nav>
-	<!--Legend for whether or not cerain times are active, delayed or not comming-->
-	<div class="key-table">
-		<h4>Legend</h4>
-
-		<ul>
-			<li><span class="red"></span> Not Coming</li>
-			<li><span class="green"></span> Coming</li>
-			<li><span class="orange"></span> Delayed</li>
-		</ul>
+	<div class="menu-toggle" onclick="toggleSidebar()">
+		<i class="fa-solid fa-bars"></i>
 	</div>
 
-		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
-		
-		<!--Leaflet map display-->
-		<div class="page1">
-			<div class="map">
-				<h2>Meyerspark Map:</h2>
-			<div id="map"></div>
-			</div>
+	<div class="wrapper">
+		<div class="sidebar">
+			<h2>TBM</h2>
+			<ul>
+			<li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+			<li><a href="About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
+			<li><a href="OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+			<li><a href="Payment Gate.php"><i class="fa-solid fa-bus"></i> Bus card</a></li>
+			</ul>
 		</div>
 
-	<div class="page">
-		<div class="schedule">
-			<!--Schedule Section-->
-			<h2>Meyerspark Schedule</h2>
-			<p>Bus Schedule MONDAYS TO FRIDAYS</p>
-	  		
-			<div class="container-two">
-				<div class="from-list-container">
-				
-					<p><b>FROM CITY</b></p>
-					<ul>
-						<li class="bus"><span class="time">07:30</span></li>
-						<li class="bus"><span class="time">08:40</span></li>
-						<li class="bus"><span class="time">13:10</span></li>
-                        <li class="bus"><span class="time">14:20</span></li>
-					</ul>
-				</div>
-				<div class="from-list-container">
-					<ul>
-						<li class="bus"><span class="time">15:40</span></li>
-						<li class="bus"><span class="time">15:55</span></li>
-                        <li class="bus"><span class="time">18:10 (B)</span></li>
-                    </ul>
-				</div>
+		<nav class="header-bar">
+			<div class="logo">
+				<h1>TSHWANEBUSMATE</h1>
 			</div>
-	  		
-			<div class="container-two">
-		    	<div class="to-list-container">	
-					<p><b>TO CITY</b></p>
-					<ul>
-						<li class="bus"><span class="time">06:10</span></li>
-						<li class="bus"><span class="time">07:55</span></li>
-                        <li class="bus"><span class="time">09:00</span></li>
-                        <li class="bus"><span class="time">13:30 (sv)</span></li>
-					</ul>
-			    </div>
+		</nav>
+		<!--Legend for whether or not cerain times are active, delayed or not comming-->
+		<div class="key-table">
+			<h4>Legend</h4>
+
+			<ul>
+				<li><span class="red"></span> Not Coming</li>
+				<li><span class="green"></span> Coming</li>
+				<li><span class="orange"></span> Delayed</li>
+			</ul>
+		</div>
+
+			<div id="back"><a href="Pretoria East Routes.html">Back to Routes</a></div>
 			
-                <div class="to-list-container">
-                        <ul>
-                            <li class="bus"><span class="time">14:50</span></li>
-                            <li class="bus"><span class="time">16:10</span></li>
-                            <li class="bus"><span class="time">16:30 (C)</span></li>
-                            <li class="bus"><span class="time">18:40 (A)</span></li>
-                        </ul>
-                </div>
+			<!--Leaflet map display-->
+			<div class="page1">
+				<div class="map">
+					<h2>Meyerspark Map:</h2>
+				<div id="map"></div>
+				</div>
 			</div>
-            
-            <div class="container-two">
-                <div class="from-list-container">
-    			    <p><b>Bus Schedule SATURDAYS,<br>SUNDAYS AND HOLIDAYS</b></p>
-					<ul>
-						<li class="bus"><span>No service available</span></li>
-					</ul>
-                </div>
 
-				<div class="from-list-container">
-					<ul>
-						<li class="bus"><span>(A) - Runs through Silverton (1)</span></li>
-						<li class="bus"><span>(B) See Silverton (1)</span></li>
-						<li class="bus"><span>(C) via CSIR</span></li>
-                        <li class="bus"><span>(SV) - School Vacation only</span></li>
-					</ul>
-                </div>
+		<div class="page">
+			<div class="schedule">
+				<!--Schedule Section-->
+				<h2>Meyerspark Schedule</h2>
+				<p>Bus Schedule MONDAYS TO FRIDAYS</p>
+				
+				<div class="container-two">
+					<div class="from-list-container">
+					
+						<p><b>FROM CITY</b></p>
+						<ul>
+							<li class="bus"><span class="time">07:30</span></li>
+							<li class="bus"><span class="time">08:40</span></li>
+							<li class="bus"><span class="time">13:10</span></li>
+							<li class="bus"><span class="time">14:20</span></li>
+						</ul>
+					</div>
+					<div class="from-list-container">
+						<ul>
+							<li class="bus"><span class="time">15:40</span></li>
+							<li class="bus"><span class="time">15:55</span></li>
+							<li class="bus"><span class="time">18:10 (B)</span></li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="container-two">
+					<div class="to-list-container">	
+						<p><b>TO CITY</b></p>
+						<ul>
+							<li class="bus"><span class="time">06:10</span></li>
+							<li class="bus"><span class="time">07:55</span></li>
+							<li class="bus"><span class="time">09:00</span></li>
+							<li class="bus"><span class="time">13:30 (sv)</span></li>
+						</ul>
+					</div>
+				
+					<div class="to-list-container">
+							<ul>
+								<li class="bus"><span class="time">14:50</span></li>
+								<li class="bus"><span class="time">16:10</span></li>
+								<li class="bus"><span class="time">16:30 (C)</span></li>
+								<li class="bus"><span class="time">18:40 (A)</span></li>
+							</ul>
+					</div>
+				</div>
+				
+				<div class="container-two">
+					<div class="from-list-container">
+						<p><b>Bus Schedule SATURDAYS,<br>SUNDAYS AND HOLIDAYS</b></p>
+						<ul>
+							<li class="bus"><span>No service available</span></li>
+						</ul>
+					</div>
+
+					<div class="from-list-container">
+						<ul>
+							<li class="bus"><span>(A) - Runs through Silverton (1)</span></li>
+							<li class="bus"><span>(B) See Silverton (1)</span></li>
+							<li class="bus"><span>(C) via CSIR</span></li>
+							<li class="bus"><span>(SV) - School Vacation only</span></li>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 
-	<!--Time animation script-->
+	<!--Time animation legend script-->
 	<script src="legend.js"></script>
-	<script src="Display-map.js"></script> <!--Js connecting to server, and dispaying actual bus tracking-->
+
+	<script>
+		function toggleSidebar() {
+			document.querySelector('.wrapper').classList.toggle('active');
+		}
+		window.addEventListener('click', function(e) {
+			const wrapper = document.querySelector('.wrapper');
+			const sidebar = document.querySelector('.sidebar');
+			const toggle = document.querySelector('.menu-toggle');
+			if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+			wrapper.classList.remove('active');
+			}
+		});
+	</script>
+
+	<!--for simulation using points.csv-->
+	<script src="Display-map.js"></script>
+
+	<!--for simulation using hidden script-->
+	<!-- <script src="test-display.js"></script>-->
+
+	<!--for actual tracking
+	<script src="test-trackedmap.js"></script>-->
 
 </body>
 </html>

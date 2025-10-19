@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Centurion</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="routes.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 	<!--Leaflet library map styling and script-->
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,177 +12,207 @@
   	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
-	<nav class="header-bar">
-		<div class="logo">
-			<h1>TSHWANEBUSMATE</h1>
-		</div>
-	</nav>
-	<!--Legend for whether or not cerain times are active, delayed or not comming-->
-	<div class="key-table">
-		<h4>Legend</h4>
-
-		<ul>
-			<li><span class="red"></span> Not Coming</li>
-			<li><span class="green"></span> Coming</li>
-			<li><span class="orange"></span> Delayed</li>
-		</ul>
+	<div class="menu-toggle" onclick="toggleSidebar()">
+		<i class="fa-solid fa-bars"></i>
 	</div>
 
-		<div id="back"><a href="routes and tracking.html">Back to Routes</a></div>
-		
-		<!--Leaflet map display-->
-		<div class="page1">
-			<div class="map">
-				<h2>Centurion Map:</h2>
-			<div id="map"></div>
-			</div>
+	<div class="wrapper">
+		<div class="sidebar">
+			<h2>TBM</h2>
+			<ul>
+			<li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+			<li><a href="About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
+			<li><a href="OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+			<li><a href="Payment Gate.php"><i class="fa-solid fa-bus"></i> Bus card</a></li>
+			</ul>
 		</div>
 
-	<div class="page">
-		<div class="schedule">
-			<!--Schedule Section-->
-			<h2>Centurion Schedule</h2>
-			<p>Bus Schedule MONDAYS TO FRIDAYS</p>
-	  		
-			<div class="container-two">
-				<div class="from-list-container">
-				
-					<p><b>FROM CITY</b></p>
-					<ul>
-						
-						<li class="bus"><span class="time">05:30</span></li>
-						<li class="bus"><span class="time">05:30(A)</span></li>
-						<li class="bus"><span class="time">05:45(C)</span></li>
-						<li class="bus"><span class="time">60:00</span></li>
-						<li class="bus"><span class="time">06:00(A)</span></li>
-						<li class="bus"><span class="time">06:15</span></li>
-						<li class="bus"><span class="time">06:15(B)(D)</span></li>
-						<li class="bus"><span class="time">06:30</span></li>
-						<li class="bus"><span class="time">06:35(A)</span></li>
-						<li class="bus"><span class="time">06:45</span></li>
-						<li class="bus"><span class="time">07:00(B)</span></li>
-						<li class="bus"><span class="time">07:00(C)</span></li>
-					</ul>
-				</div>
-				<div class="from-list-container">
-					<ul>
-						<li class="bus"><span class="time">07:15(A)</span></li>
-						<li class="bus"><span class="time">07:35(A)</span></li>
-						<li class="bus"><span class="time">07:35</span></li>
-						<li class="bus"><span class="time">08:00</span></li>
-						<li class="bus"><span class="time">08:15</span></li>
-						<li class="bus"><span class="time">13:35</span></li>
-						<li class="bus"><span class="time">15:30</span></li>
-						<li class="bus"><span class="time">16:05</span></li>
-						<li class="bus"><span class="time">16:40</span></li>
-						<li class="bus"><span class="time">17:30</span></li>
-					<ul>
-				</div>
+		<nav class="header-bar">
+			<div class="logo">
+				<h1>TSHWANEBUSMATE</h1>
 			</div>
-	  		
-			<div class="container-two">
-		    	<div class="to-list-container">	
-					<p><b>TO CITY</b></p>
-					<ul>
-						<li class="bus"><span class="time">06:00</span></li>
-						<li class="bus"><span class="time">06:10(A)</span></li>
-						<li class="bus"><span class="time">06:15(C)</span></li>
-						<li class="bus"><span class="time">06:30</span></li>
-						<li class="bus"><span class="time">06:50(A)</span></li>
-						<li class="bus"><span class="time">07:10(B)</span></li>
-						<li class="bus"><span class="time">07:10</span></li>
-						<li class="bus"><span class="time">07:15(B)(D)</span></li>
-						<li class="bus"><span class="time">07:25</span></li>
-						<li class="bus"><span class="time">07:25(C)</span></li>
-						<li class="bus"><span class="time">07:40</span></li>
-						<li class="bus"><span class="time">07:55</span></li>
-						<li class="bus"><span class="time">08:20</span></li>
-						<li class="bus"><span class="time">08:40</span></li>
-					</ul>
-			</div>
+		</nav>
+		<!--Legend for whether or not cerain times are active, delayed or not comming-->
+		<div class="key-table">
+			<h4>Legend</h4>
+
+			<ul>
+				<li><span class="red"></span> Not Coming</li>
+				<li><span class="green"></span> Coming</li>
+				<li><span class="orange"></span> Delayed</li>
+			</ul>
+		</div>
+
+			<div id="back"><a href="Centurion Routes.html">Back to Routes</a></div>
 			
-			<div class="to-list-container">
-					<ul>
-						<li class="bus"><span class="time">08:50</span></li>
-						<li class="bus"><span class="time">14:55</span></li>
-						<li class="bus"><span class="time">15:45</span></li>
-						<li class="bus"><span class="time">15:55</span></li>
-						<li class="bus"><span class="time">16:00(D)</span></li>
-						<li class="bus"><span class="time">16:05</span></li>
-						<li class="bus"><span class="time">16:05</span></li>
-						<li class="bus"><span class="time">16:10(A)</span></li>
-						<li class="bus"><span class="time">16:10(F)</span></li>
-						<li class="bus"><span class="time">16:40</span></li>
-						<li class="bus"><span class="time">16:55(E)(C)</span></li>
-						<li class="bus"><span class="time">17:15</span></li>
-						<li class="bus"><span class="time">17:20</span></li>
-						<li class="bus"><span class="time">18:10</span></li>
-					</ul>
-			</div>
-			</div>
-	   
-			<p><b>Bus Schedule SATURDAYS</b></p>
-		
-			<div class="container-two">
-			<div class="from-list-container">
-					<p><b>FROM CITY</b></p>
-					<ul>
-						<li class="bus"><span class="time">06:40</span></li>
-						<li class="bus"><span class="time">07:15</span></li>
-					</ul>
-			</div>
-			</div>
-	  
-			<div class="container-two">
-				<div class="to-list-container">
-					<p><b>TO CITY</b></p>
-					<ul>
-						<li class="bus"><span class="time">07:20</li>
-						<li class="bus"><span class="time">07:55</li>
-						<li class="bus"><span class="time">13:15</li>
-					</ul>
+			<!--Leaflet map display-->
+			<div class="page1">
+				<div class="map">
+					<h2>Centurion Map:</h2>
+				<div id="map"></div>
 				</div>
 			</div>
 
-			<div class="container-two">
-				<div class="from-list-container">
-					<p><b>Bus Schedule SUNDAYS AND HOLIDAYS</b></p>
-					<ul>
-						<li class="bus"><span>No service available</span></li>
-					</ul>
-				</div>
-			</div>
-			<div class="container-two">
-				<div class="from-list-container">
-					<p>(A) - Drive normal route up to c/o Lenchen and John Vorster , Left John Vorster at the circle of Karee street
-						come opposite direction of John Vorster , Left Nellmapius, Right Luton, Right Logan, Left Tegel-becomes
-						Oak road, Right Witchazel, Left Olivenhout Road, Left John Vorster, Right Lenchen and follow the normal
-						route of Centurion.
-					</p>
+		<div class="page">
+			<div class="schedule">
+				<!--Schedule Section-->
+				<h2>Centurion Schedule</h2>
+				<p>Bus Schedule MONDAYS TO FRIDAYS</p>
+				
+				<div class="container-two">
+					<div class="from-list-container">
 					
-					<li class="bus"><span>(B) – via Ecopark & Highveld</span></li>
-					<li class="bus"><span>(C) – via Irene Station</span></li>
-					<li class="bus"><span>(D) – Denel</span></li>
-					<li class="bus"><span>(E) – c/o N14 & Jean Road</span></li>
-					<li class="bus"><span>(F) – c/o Jean & Lenchen</span></li>
+						<p><b>FROM CITY</b></p>
+						<ul>
+							
+							<li class="bus"><span class="time">05:30</span></li>
+							<li class="bus"><span class="time">05:30(A)</span></li>
+							<li class="bus"><span class="time">05:45(C)</span></li>
+							<li class="bus"><span class="time">60:00</span></li>
+							<li class="bus"><span class="time">06:00(A)</span></li>
+							<li class="bus"><span class="time">06:15</span></li>
+							<li class="bus"><span class="time">06:15(B)(D)</span></li>
+							<li class="bus"><span class="time">06:30</span></li>
+							<li class="bus"><span class="time">06:35(A)</span></li>
+							<li class="bus"><span class="time">06:45</span></li>
+							<li class="bus"><span class="time">07:00(B)</span></li>
+							<li class="bus"><span class="time">07:00(C)</span></li>
+						</ul>
+					</div>
+					<div class="from-list-container">
+						<ul>
+							<li class="bus"><span class="time">07:15(A)</span></li>
+							<li class="bus"><span class="time">07:35(A)</span></li>
+							<li class="bus"><span class="time">07:35</span></li>
+							<li class="bus"><span class="time">08:00</span></li>
+							<li class="bus"><span class="time">08:15</span></li>
+							<li class="bus"><span class="time">13:35</span></li>
+							<li class="bus"><span class="time">15:30</span></li>
+							<li class="bus"><span class="time">16:05</span></li>
+							<li class="bus"><span class="time">16:40</span></li>
+							<li class="bus"><span class="time">17:30</span></li>
+						<ul>
+					</div>
+				</div>
+				
+				<div class="container-two">
+					<div class="to-list-container">	
+						<p><b>TO CITY</b></p>
+						<ul>
+							<li class="bus"><span class="time">06:00</span></li>
+							<li class="bus"><span class="time">06:10(A)</span></li>
+							<li class="bus"><span class="time">06:15(C)</span></li>
+							<li class="bus"><span class="time">06:30</span></li>
+							<li class="bus"><span class="time">06:50(A)</span></li>
+							<li class="bus"><span class="time">07:10(B)</span></li>
+							<li class="bus"><span class="time">07:10</span></li>
+							<li class="bus"><span class="time">07:15(B)(D)</span></li>
+							<li class="bus"><span class="time">07:25</span></li>
+							<li class="bus"><span class="time">07:25(C)</span></li>
+							<li class="bus"><span class="time">07:40</span></li>
+							<li class="bus"><span class="time">07:55</span></li>
+							<li class="bus"><span class="time">08:20</span></li>
+							<li class="bus"><span class="time">08:40</span></li>
+						</ul>
+				</div>
+				
+				<div class="to-list-container">
+						<ul>
+							<li class="bus"><span class="time">08:50</span></li>
+							<li class="bus"><span class="time">14:55</span></li>
+							<li class="bus"><span class="time">15:45</span></li>
+							<li class="bus"><span class="time">15:55</span></li>
+							<li class="bus"><span class="time">16:00(D)</span></li>
+							<li class="bus"><span class="time">16:05</span></li>
+							<li class="bus"><span class="time">16:05</span></li>
+							<li class="bus"><span class="time">16:10(A)</span></li>
+							<li class="bus"><span class="time">16:10(F)</span></li>
+							<li class="bus"><span class="time">16:40</span></li>
+							<li class="bus"><span class="time">16:55(E)(C)</span></li>
+							<li class="bus"><span class="time">17:15</span></li>
+							<li class="bus"><span class="time">17:20</span></li>
+							<li class="bus"><span class="time">18:10</span></li>
+						</ul>
+				</div>
+				</div>
+		
+				<p><b>Bus Schedule SATURDAYS</b></p>
+			
+				<div class="container-two">
+				<div class="from-list-container">
+						<p><b>FROM CITY</b></p>
+						<ul>
+							<li class="bus"><span class="time">06:40</span></li>
+							<li class="bus"><span class="time">07:15</span></li>
+						</ul>
+				</div>
+				</div>
+		
+				<div class="container-two">
+					<div class="to-list-container">
+						<p><b>TO CITY</b></p>
+						<ul>
+							<li class="bus"><span class="time">07:20</li>
+							<li class="bus"><span class="time">07:55</li>
+							<li class="bus"><span class="time">13:15</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="container-two">
+					<div class="from-list-container">
+						<p><b>Bus Schedule SUNDAYS AND HOLIDAYS</b></p>
+						<ul>
+							<li class="bus"><span>No service available</span></li>
+						</ul>
+					</div>
+				</div>
+				<div class="container-two">
+					<div class="from-list-container">
+						<p>(A) - Drive normal route up to c/o Lenchen and John Vorster , Left John Vorster at the circle of Karee street
+							come opposite direction of John Vorster , Left Nellmapius, Right Luton, Right Logan, Left Tegel-becomes
+							Oak road, Right Witchazel, Left Olivenhout Road, Left John Vorster, Right Lenchen and follow the normal
+							route of Centurion.
+						</p>
+						
+						<li class="bus"><span>(B) – via Ecopark & Highveld</span></li>
+						<li class="bus"><span>(C) – via Irene Station</span></li>
+						<li class="bus"><span>(D) – Denel</span></li>
+						<li class="bus"><span>(E) – c/o N14 & Jean Road</span></li>
+						<li class="bus"><span>(F) – c/o Jean & Lenchen</span></li>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<!--Time animation legend script-->
+		<!--Time animation legend script-->
 	<script src="legend.js"></script>
+
+	<script>
+		function toggleSidebar() {
+			document.querySelector('.wrapper').classList.toggle('active');
+		}
+		window.addEventListener('click', function(e) {
+			const wrapper = document.querySelector('.wrapper');
+			const sidebar = document.querySelector('.sidebar');
+			const toggle = document.querySelector('.menu-toggle');
+			if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+			wrapper.classList.remove('active');
+			}
+		});
+	</script>
 
 	<!--for simulation using points.csv-->
 	<script src="Display-map.js"></script>
 
 	<!--for simulation using hidden script-->
 	<!-- <script src="test-display.js"></script>-->
-	
+
 	<!--for actual tracking
 	<script src="test-trackedmap.js"></script>-->
 </body>
