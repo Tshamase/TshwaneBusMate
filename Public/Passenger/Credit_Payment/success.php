@@ -18,7 +18,7 @@ $stmt->execute();
 $stmt->close();
 
 // Insert transaction record for history
-$insertQuery = "INSERT INTO transactions (user_id, amount, transaction_type, description) VALUES (?, ?, 'credit', 'Credit Reload via PayFast')";
+$insertQuery = "INSERT INTO transactions (user_id, amount, transaction_type, description) VALUES (?, ?, 'credit', 'Credit Reload')";
 $insertStmt = $conn->prepare($insertQuery);
 $insertStmt->bind_param("id", $userId, $amount);
 $insertStmt->execute();

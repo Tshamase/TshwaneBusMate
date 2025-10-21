@@ -82,14 +82,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    // If no errors, process payment (redirect to PayFast)
+    // If no errors, process payment directly
     if (empty($errors)) {
         // Store transaction details in session
         $_SESSION['payment_amount'] = $totalAmount;
         $_SESSION['payment_action'] = $action;
 
-        // Redirect to checkout.php for PayFast integration
-        header("Location: checkout.php");
+        // Redirect to success.php directly
+        header("Location: success.php");
         exit();
     }
 }
