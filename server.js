@@ -12,11 +12,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/passenger/index.html"));
+  res.sendFile(path.join(__dirname, "public/Passenger/home.html"));
 });
 
 app.get("/driver", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/driver/index.html"));
+  res.sendFile(path.join(__dirname, "public/Driver/WestPark7-Driver.html"));
 });
 
 // Handle WebSocket connections
