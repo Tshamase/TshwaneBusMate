@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 // Driver page
-app.get("/driver", (req, res) => {
+app.get("/Driver", (req, res) => {
   res.sendFile(path.join(__dirname, "Public/Driver/WestPark7-Driver.html"));
 });
 
