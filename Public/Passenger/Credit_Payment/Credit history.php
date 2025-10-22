@@ -4,14 +4,60 @@ include 'db_payment.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
+    header("Location: credit_wallet.html");
     exit();
 }
 
 $username = $_SESSION['user'];
+$userId = 1; // Example user ID - in production, get from session
+
+// Handle search and filters
+$search = $_POST['search'] ?? '';
+$filterType = $_POST['filter_type'] ?? 'all';
+$filterDate = $_POST['filter_date'] ?? 'all';
+
+// Build query with filters
+$query = "SELECT * FROM transactions WHERE user_id = ?";
+$params = [$userId];
+$types = "i";
+
+if (!empty($search)) {
+    $query .= " AND (description LIKE ? OR transaction_type LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+    $types .= "ss";
+}
+
+if ($filterType !== 'all') {
+    $query .= " AND transaction_type = ?";
+    $params[] = $filterType;
+    $types .= "s";
+}
+
+if ($filterDate !== 'all') {
+    switch ($filterDate) {
+        case 'today':
+            $query .= " AND DATE(transaction_date) = CURDATE()";
+            break;
+        case 'week':
+            $query .= " AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+            break;
+        case 'month':
+            $query .= " AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+            break;
+    }
+}
+
+$query .= " ORDER BY transaction_date DESC";
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param($types, ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +130,70 @@ $username = $_SESSION['user'];
             width: 100%;
         }
 
+        .filters-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filters-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #f0f0f0;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input::placeholder {
+            color: rgba(240, 240, 240, 0.7);
+        }
+
+        .filter-group select option {
+            background: #1a2f3a;
+            color: #f0f0f0;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
         .history-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -93,11 +203,21 @@ $username = $_SESSION['user'];
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .history-container h2 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: #27ae60;
-            text-align: center;
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h2 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .transaction-count {
+            color: rgba(240, 240, 240, 0.7);
+            font-size: 0.9rem;
         }
 
         .transaction-list {
@@ -113,21 +233,34 @@ $username = $_SESSION['user'];
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .transaction-details {
+            flex: 1;
         }
 
         .transaction-details h3 {
-            color: #FFD700;
-            margin-bottom: 5px;
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            color: #f0f0f0;
         }
 
         .transaction-details p {
-            color: #bbb;
-            margin: 2px 0;
+            margin: 0;
+            color: rgba(240, 240, 240, 0.7);
+            font-size: 0.9rem;
         }
 
         .transaction-amount {
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: right;
         }
 
         .credit-amount {
@@ -140,9 +273,14 @@ $username = $_SESSION['user'];
 
         .empty-state {
             text-align: center;
-            color: #bbb;
-            font-size: 1.2rem;
-            margin: 50px 0;
+            padding: 60px 20px;
+            color: rgba(240, 240, 240, 0.7);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #666;
         }
 
         footer {
@@ -158,13 +296,14 @@ $username = $_SESSION['user'];
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .transaction-amount {
                 margin-top: 10px;
             }
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>TshwaneBusMate</h1>
@@ -174,52 +313,65 @@ $username = $_SESSION['user'];
     </header>
 
     <main>
-        <div class="history-container">
-            <h2>Credit History</h2>
-            
-            <?php
-            // Fetch transaction history for the logged-in user
-            $userId = 1; // This should be dynamically set based on session
+        <div class="filters-section">
+            <form method="POST" class="filters-form">
+                <div class="filter-group">
+                    <label for="search">Search Transactions</label>
+                    <input type="text" id="search" name="search" placeholder="Search by description..." value="<?php echo htmlspecialchars($search); ?>">
+                </div>
+                <div class="filter-group">
+                    <label for="filter_type">Transaction Type</label>
+                    <select id="filter_type" name="filter_type">
+                        <option value="all" <?php echo $filterType === 'all' ? 'selected' : ''; ?>>All Types</option>
+                        <option value="credit" <?php echo $filterType === 'credit' ? 'selected' : ''; ?>>Credits</option>
+                        <option value="debit" <?php echo $filterType === 'debit' ? 'selected' : ''; ?>>Debits</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter_date">Date Range</label>
+                    <select id="filter_date" name="filter_date">
+                        <option value="all" <?php echo $filterDate === 'all' ? 'selected' : ''; ?>>All Time</option>
+                        <option value="today" <?php echo $filterDate === 'today' ? 'selected' : ''; ?>>Today</option>
+                        <option value="week" <?php echo $filterDate === 'week' ? 'selected' : ''; ?>>Last 7 Days</option>
+                        <option value="month" <?php echo $filterDate === 'month' ? 'selected' : ''; ?>>Last 30 Days</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+            </form>
+        </div>
 
-            $query = "SELECT * FROM transactions WHERE user_id = ? AND transaction_type IS NOT NULL ORDER BY transaction_date DESC";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("i", $userId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows > 0) {
-                echo '<ul class="transaction-list">';
-                
-                while ($row = $result->fetch_assoc()) {
-                    $amount = htmlspecialchars($row['amount']);
-                    $type = htmlspecialchars($row['transaction_type']);
-                    $date = htmlspecialchars($row['transaction_date']);
-                    $description = htmlspecialchars($row['description']);
-                    
-                    $amountClass = ($type == 'credit') ? 'credit-amount' : 'debit-amount';
-                    $amountPrefix = ($type == 'credit') ? '+' : '-';
-                    
-                    echo '<li class="transaction-item">';
-                    echo '<div class="transaction-details">';
-                    echo '<h3>' . $description . '</h3>';
-                    echo '<p>' . date('M d, Y H:i', strtotime($date)) . '</p>';
-                    echo '</div>';
-                    echo '<div class="transaction-amount ' . $amountClass . '">';
-                    echo $amountPrefix . ' ZAR ' . number_format($amount, 2);
-                    echo '</div>';
-                    echo '</li>';
-                }
-                
-                echo '</ul>';
-            } else {
-                echo '<div class="empty-state">';
-                echo '<i class="fas fa-history" style="font-size: 3rem; margin-bottom: 20px; color: #666;"></i>';
-                echo '<p>No transactions found.</p>';
-                echo '</div>';
-            }
-            
-            $stmt->close();
-            ?>
+        <div class="history-container">
+            <div class="history-header">
+                <h2>Credit History</h2>
+                <div class="transaction-count">
+                    <?php echo $result->num_rows; ?> transaction<?php echo $result->num_rows !== 1 ? 's' : ''; ?>
+                </div>
+            </div>
+
+            <?php if ($result->num_rows > 0): ?>
+                <ul class="transaction-list">
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <li class="transaction-item">
+                            <div class="transaction-details">
+                                <h3><?php echo htmlspecialchars($row['description']); ?></h3>
+                                <p><?php echo date('M d, Y H:i', strtotime($row['transaction_date'])); ?></p>
+                            </div>
+                            <div class="transaction-amount <?php echo $row['transaction_type'] === 'credit' ? 'credit-amount' : 'debit-amount'; ?>">
+                                <?php echo $row['transaction_type'] === 'credit' ? '+' : '-'; ?> ZAR <?php echo number_format($row['amount'], 2); ?>
+                            </div>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+            <?php else: ?>
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>No transactions found matching your criteria.</p>
+                </div>
+            <?php endif; ?>
+
+            <?php $stmt->close(); ?>
         </div>
     </main>
 
@@ -227,4 +379,5 @@ $username = $_SESSION['user'];
         <div class="copyright">Copyright &copy; 2025 City of Tshwane. All rights reserved.</div>
     </footer>
 </body>
+
 </html>

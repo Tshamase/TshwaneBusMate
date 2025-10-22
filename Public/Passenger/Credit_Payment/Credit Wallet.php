@@ -1,12 +1,211 @@
 <?php
-include 'db_payment.php';
-$userId = 1; // Example user ID
-$query = "SELECT balance FROM transactions WHERE id = $userId";
-$result = mysqli_query($conn, $query);
-if ($result && $row = mysqli_fetch_assoc($result)) {
-  $balance = htmlspecialchars($row['balance']) . " credits";
-} else {
-  $balance = "Unable to fetch balance";
+session_start();
+
+// Check if user is logged in - redirect to login if not
+if (!isset($_SESSION['user'])) {
+  header("Location: ../login.php"); // Adjust path as needed
+  exit();
 }
-include 'credit_wallet.html';
+
+include 'db_payment.php';
+$userId = $_SESSION['user']['id'] ?? 1; // Get user ID from session
+
+// Get the latest balance for the user
+$query = "SELECT balance FROM transactions WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $row = $result->fetch_assoc()) {
+  $balance = number_format($row['balance'], 2);
+} else {
+  $balance = "0.00";
+}
+
+$stmt->close();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credit Wallet - TshwaneBusMate</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="credit_wallet.css" />
+  <style>
+    /* Menu toggle icon */
+    .menu-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 20px;
+      color: #27ae60;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Sidebar navigation menu */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -220px;
+      /* Hidden by default */
+      width: 180px;
+      height: 100vh;
+      background: #0d1b24;
+      padding: 20px 0;
+      transition: left 0.3s ease;
+      /* Smooth transition */
+      z-index: 999;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Show sidebar when active */
+    .sidebar.active {
+      left: 0;
+    }
+
+    /* Sidebar title */
+    .sidebar h2 {
+      color: #ffd700;
+      /* Title color */
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    /* Sidebar list styling */
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      padding: 8px 12px;
+      /* Padding for list items */
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      /* Space between icon and text */
+      transition: background 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    /* Sidebar links */
+    .sidebar ul li a {
+      color: #fafafc;
+      /* Link color */
+      text-decoration: none;
+      /* Remove underline */
+      flex-grow: 1;
+      /* Allow link to grow */
+    }
+
+    /* Hover effect for sidebar items */
+    .sidebar ul li:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar ul li:hover a {
+      color: #27ae60;
+    }
+
+    /* Adjust header to accommodate sidebar toggle */
+    header {
+      padding-left: 60px;
+      /* Make room for menu toggle */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <div class="sidebar">
+    <h2>TBM</h2>
+    <ul>
+      <li>
+        <a href="../home.html"><i class="fa-solid fa-house"></i>Home</a>
+      </li>
+      <li>
+        <a href="#"><i class="fa-solid fa-bus"></i>About</a>
+      </li>
+      <li>
+        <a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a>
+      </li>
+      <li>
+        <a href="Credit Wallet.php"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a>
+      </li>
+      <li>
+        <a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a>
+      </li>
+    </ul>
+  </div>
+
+  <header>
+    <h1>TshwaneBusMate</h1>
+    <p>On the move for people</p>
+  </header>
+
+  <div class="balance">
+    <h2>Total Balance:</h2>
+    <p>
+      Remaining Balance: ZAR <?php echo $balance; ?>
+    </p>
+  </div>
+
+  <main>
+    <div class="card-container">
+      <div class="card-header"></div>
+      <div class="card-details">
+        <p>Card Number:</p>
+        <div class="card-number">5576 9700 ****** 00</div>
+        <p>Valid:</p>
+        <div class="card-number">10/26</div>
+        <div class="card-name">Ms/Mr ......</div>
+      </div>
+    </div>
+  </main>
+
+  <section class="load-history">
+    <div style="text-align: center">
+      <h4>Load Credits</h4>
+      <a class="icon-link" href="payment_gateway.html">
+        <div class="load"></div>
+      </a>
+    </div>
+
+    <div style="text-align: center">
+      <h4>Load History</h4>
+      <a class="icon-link" href="Credit history.php">
+        <div class="history"></div>
+      </a>
+    </div>
+  </section>
+
+  <footer>Copyright &copy; 2025 City of Tshwane. All rights reserved.</footer>
+
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('active');
+    }
+
+    // Close sidebar when clicking outside
+    window.addEventListener('click', function(e) {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.menu-toggle');
+
+      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+
+</html>

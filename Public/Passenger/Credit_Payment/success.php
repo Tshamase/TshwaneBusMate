@@ -1,30 +1,5 @@
 <?php
 session_start();
-require 'db_payment.php';
-
-// Retrieve amount from session
-$amount = $_SESSION['payment_amount'] ?? 0;
-
-// Connect to database
-$conn = new mysqli($servername, $username, $password);
-$conn->select_db($dbname);
-
-// Update balance for userId=1 (assuming single user for now)
-$userId = 1;
-$query = "UPDATE transactions SET balance = balance + ? WHERE id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("di", $amount, $userId);
-$stmt->execute();
-$stmt->close();
-
-// Insert transaction record for history
-$insertQuery = "INSERT INTO transactions (user_id, amount, transaction_type, description) VALUES (?, ?, 'credit', 'Credit Reload via PayFast')";
-$insertStmt = $conn->prepare($insertQuery);
-$insertStmt->bind_param("id", $userId, $amount);
-$insertStmt->execute();
-$insertStmt->close();
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -33,16 +8,142 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Successful transaction</title>
+    <title>Payment Successful - TshwaneBusMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2f3a, #0d1b24);
+            color: #f0f0f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, #000 0%, #0d1b24 100%);
+            padding: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff 60%, #FFD700 40%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .success-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .success-container h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+
+        .success-container p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #000, #0d1b24);
+            padding: 20px 0;
+            text-align: center;
+            color: #aaa;
+            margin-top: auto;
+        }
+
+        .copyright {
+            margin-top: 0px;
+            padding-top: 0px;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>✅ Payment Successful!</h2>
-    <p>Thank you for your purchase. <br>
-        Credits reloaded successfully.
-    </p>
-    <a href="Credit Wallet.php"> Back to credit wallet.</a>
+    <header>
+        <div class="logo">
+            <h1>TshwaneBusMate</h1>
+        </div>
+    </header>
 
+    <main>
+        <div class="success-container">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p>Thank you for your payment. Your transaction has been processed successfully.<br>
+                Your credits will be updated shortly.</p>
+            <a href="Credit Wallet.php" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Credit Wallet
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="copyright">Copyright &copy; 2025 City of Tshwane. All rights reserved.</div>
+    </footer>
 </body>
 
 </html>
