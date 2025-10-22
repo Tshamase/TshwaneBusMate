@@ -103,11 +103,12 @@
         letter-spacing: 1px;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 17vh auto 0;
-      padding: 20px;
-    }
+   .container {
+    max-width: 1200px;
+    margin: 17vh auto 0;
+    padding: 20px;
+    width: 95%;
+}
 
     /* Welcome Card */
     .welcome-card {
@@ -209,6 +210,7 @@
       padding: 25px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
+    
     .map h1 {
       color: #FFD700;
       margin-bottom: 15px;
@@ -220,16 +222,18 @@
       align-items: flex-start;
       justify-content: center;
     }
-    .map-wrapper iframe {
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      max-width: 100%;
-    }
+   .map-wrapper iframe {
+    width: 100%;
+    height: 400px; /* Default height */
+}
     .map-text {
       max-width: 350px;
       color: #fff;
-    }
+    }.
+    
+    map-text {
+    font-size: clamp(14px, 1.2vw, 16px);
+}
     .map-text h2 {
       color: #27F531;
       margin-bottom: 10px;
@@ -271,17 +275,42 @@
     }
 
     /* Responsive */
-    @media (max-width: 900px) {
-      .container { padding: 10px; }
-      .map-wrapper { flex-direction: column; align-items: stretch; }
-      nav.header-bar { padding: 10px 10px; }
-    }
-    @media (max-width: 600px) {
-      .container { margin-top: 18vh; }
-      .sidebar { width: 100vw; left: -100vw; }
-      .wrapper.active .sidebar { left: 0; }
-      nav.header-bar .logo h1 { font-size: 1.3rem;}
-    }
+    /* Responsive adjustments for tablet and smaller */
+@media (max-width: 900px) {
+    .container { padding: 15px; }
+    .map-wrapper { flex-direction: column; align-items: stretch; gap: 20px; }
+    nav.header-bar { padding: 10px 20px; }
+    .welcome-card h1 { font-size: 2rem; }
+    .welcome-card h2 { font-size: 1.5rem; }
+    .main-btn button { padding: 8px 25px; font-size: 1rem; }
+}
+
+/* Smartphones */
+@media (max-width: 600px) {
+    .container { margin-top: 18vh; padding: 10px; }
+    .sidebar { width: 100vw; left: -100vw; }
+    .wrapper.active .sidebar { left: 0; }
+    nav.header-bar .logo h1 { font-size: 1.3rem; }
+    .welcome-card h1 { font-size: 1.6rem; }
+    .welcome-card h2 { font-size: 1.2rem; }
+    .main-btn button { padding: 6px 20px; font-size: 0.95rem; }
+    .map-wrapper iframe { height: 300px; }
+    .map-text { font-size: 14px; max-width: 100%; }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 400px) {
+    .welcome-card { padding: 25px 15px 20px 15px; }
+    .main-btn button { padding: 5px 15px; font-size: 0.9rem; }
+    .map-wrapper iframe { height: 250px; }
+    .dropdown label { font-size: 1rem; }
+    .sidebar ul li { padding: 12px; }
+}
+
+/* Minor enhancements */
+.sidebar ul li a {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
   </style>
 </head>
 <body>
@@ -294,10 +323,10 @@
     <div class="sidebar">
       <h2>TBM</h2>
       <ul>
-        <li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
-        <li><a href="About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
-        <li><a href="OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
-        <li><a href="Payment Gate.php"><i class="fa-solid fa-bus"></i> Bus card</a></li>
+        <li><a href="Passenger/home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="Passenger/About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
+        <li><a href="Passenger/OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+        <li><a href="Passenger/Payment Gate.php"><i class="fa-solid fa-bus"></i> Bus card</a></li>
 
       </ul>
     </div>
@@ -324,11 +353,11 @@
         <h2>To <span>TshwaneBusMate</span></h2>
         <p>Choose us because we choose YOU! Read more on our <span style="color:#FFD700; font-weight:bold;">About</span> page.</p>
         <div class="main-btn">
-          <a href="About page.html"><button>About</button></a>
+          <a href=""Passenger/About page.html"><button>About</button></a>
         </div>
       </div>
 
-      <!-- Interactive Bus Area Dropdowns 
+      <!--Interactive Bus Area Dropdowns--> 
       <section class="Bus" id="busSection">
         <div class="dropdown">
           <input type="checkbox" id="cen">
@@ -465,7 +494,7 @@
             </ul>
           </div>
         </div>  
-      </section>-->
+      </section>
 
       <!-- Map Section -->
       <section class="map" id="aboutSection">
