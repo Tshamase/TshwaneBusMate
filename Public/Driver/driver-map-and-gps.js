@@ -55,7 +55,7 @@ function loadRoutePoints() {
 
 // --- WebSocket and GPS Tracking ---
 const statusEl = document.getElementById('status');
-const ws = new WebSocket("ws://localhost:3000"); // Change to your ngrok domain or localhost
+const ws = new WebSocket("ws:///tshwanebusmate.onrender.com"); // Change to your ngrok domain or localhost
 
 //connection to server.js
 ws.onopen = () => {
@@ -65,7 +65,7 @@ ws.onopen = () => {
     // Send GPS every 5 seconds
     setInterval(() => {
         // Get GPS location via browser
-        if (navigator.geolocation) {
+        if (navigator.geoloc ation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     const data = {
