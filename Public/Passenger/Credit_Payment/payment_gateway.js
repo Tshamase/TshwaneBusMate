@@ -24,38 +24,6 @@
     }
   }
 
-  // Luhn check for card numbers
-  function luhnCheck(num) {
-    var s = num.replace(/\D/g, "");
-    var sum = 0,
-      flip = 0;
-    for (var i = s.length - 1; i >= 0; i--) {
-      var d = parseInt(s.charAt(i), 10);
-      if (flip) {
-        d = d * 2;
-        if (d > 9) d -= 9;
-      }
-      sum += d;
-      flip = flip ^ 1;
-    }
-    return sum % 10 === 0 && s.length >= 12 && s.length <= 19;
-  }
-
-  // Expiry MM/YY validation
-  function validExpiry(v) {
-    if (!/^\d{2}\/\d{2}$/.test(v)) return false;
-    var parts = v.split("/");
-    var mm = parseInt(parts[0], 10);
-    var yy = parseInt(parts[1], 10);
-    if (mm < 1 || mm > 12) return false;
-    var now = new Date();
-    var currentYear = now.getFullYear() % 100;
-    var currentMonth = now.getMonth() + 1;
-    if (yy < currentYear) return false;
-    if (yy === currentYear && mm < currentMonth) return false;
-    return true;
-  }
-
   // Elements we will use
   var actionSelect = document.getElementById("actionSelect");
   var reloadFields = document.getElementById("reloadFields");
@@ -92,7 +60,7 @@
     var items = packageList.querySelectorAll(".packageItem");
     items.forEach(function (it, idx) {
       var btn = it.querySelector(".btn-remove");
-      btn.style.display = idx === 0 ? "none" : "";
+      btn.style.display = "inline-block"; // Show remove button for all items
     });
     addPackageBtn.disabled = items.length >= 3;
 
@@ -141,7 +109,7 @@
 
   (function initPackageControls() {
     var firstRemove = packageList.querySelector(".btn-remove");
-    if (firstRemove) firstRemove.style.display = "none";
+    if (firstRemove) firstRemove.style.display = "inline-block"; // Show remove button for first item
     attachSelectListeners();
     updateRemoveButtons();
   })();
@@ -289,6 +257,45 @@
     updateInvoice();
   });
 
+  // Notification functions
+  function showNotification(message, type = "info") {
+    var dialog = document.getElementById("notificationDialog");
+    var icon = dialog.querySelector(".notification-icon");
+    var messageEl = dialog.querySelector(".notification-message");
+
+    // Reset classes
+    icon.className = "notification-icon";
+    icon.classList.add(type);
+
+    // Set icon
+    var iconMap = {
+      success: "fas fa-check-circle",
+      error: "fas fa-exclamation-triangle",
+      warning: "fas fa-exclamation-circle",
+      info: "fas fa-info-circle",
+    };
+    icon.innerHTML = '<i class="' + iconMap[type] + '"></i>';
+
+    // Set message
+    messageEl.textContent = message;
+
+    // Show dialog
+    dialog.classList.add("show");
+
+    // Auto-hide after 5 seconds
+    setTimeout(function () {
+      dialog.classList.remove("show");
+    }, 5000);
+  }
+
+  // Close notification on click
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("notification-close")) {
+      var dialog = document.getElementById("notificationDialog");
+      dialog.classList.remove("show");
+    }
+  });
+
   // Validation and submit
   proceedPay.addEventListener("click", function () {
     var firstInvalid = null;
@@ -299,7 +306,10 @@
 
     var action = actionSelect.value;
     if (!action) {
-      alert("Please select an action: reload or purchase.");
+      showNotification(
+        "Please select an action: reload or purchase.",
+        "warning"
+      );
       actionSelect.focus();
       return;
     }
@@ -311,6 +321,11 @@
       totalValue = amt;
       if (!reloadAmount.value || isNaN(amt) || amt < 11) {
         markInvalid(reloadAmount, "Enter a valid amount (minimum ZAR 11.00).");
+        showNotification(
+          "Please enter a valid reload amount (minimum ZAR 11.00).",
+          "error"
+        );
+        return;
       }
     } else if (action === "purchase") {
       var any = false;
@@ -324,21 +339,32 @@
         }
       });
       if (!any) {
-        alert("Please choose at least one product.");
+        showNotification("Please choose at least one product.", "warning");
         return;
       }
     }
 
     if (totalValue <= 0) {
-      alert(
-        "Your total is ZAR 0.00. Please enter an amount or choose product(s)."
+      showNotification(
+        "Your total is ZAR 0.00. Please enter an amount or choose product(s).",
+        "error"
       );
       return;
     }
 
+    // Show processing notification
+    showNotification("Processing your payment request...", "info");
+
     // Submit the form to payment_gateway.php
     document.getElementById("invoicePayment").submit();
   });
+
+  // Display session errors on page load
+  if (window.paymentErrors && window.paymentErrors.length > 0) {
+    window.paymentErrors.forEach(function (error) {
+      showNotification(error, "error");
+    });
+  }
 
   // FIXED: Ensure invoice updates on page load
   document.addEventListener("DOMContentLoaded", function () {

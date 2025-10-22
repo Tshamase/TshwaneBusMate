@@ -1,5 +1,0 @@
-- [x] Delete PayFast-related files: checkout.php and payfast_notify.php
-- [x] Modify payment_gateway.php to directly process payments without PayFast integration
-- [x] Update payment_gateway.js to submit the form instead of simulating success
-- [x] Update success.php to remove PayFast references in transaction description
-- [x] Test the simplified payment flow
