@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // Serve static files from 'public'
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "Public")));
 
 // Routes
 app.get("/", (req, res) => {
