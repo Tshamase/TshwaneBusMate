@@ -10,7 +10,7 @@ let points = [];
 let bus;
 
 // Connect to WebSocket (GPS updates for bus)
-const ws = new WebSocket("ws://localhost:3000"); //website link or localhost
+const ws = new WebSocket("ws:///tshwanebusmate.onrender.com"); //website link or localhost
 
 // --- Load points from hidden <script> and animate ---
 function loadAndAnimate() {
