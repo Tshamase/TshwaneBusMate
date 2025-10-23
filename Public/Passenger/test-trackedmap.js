@@ -3,13 +3,12 @@
 // 'map' refers to the HTML element <div id="map"></div>
 const map = L.map('map').setView([-25.7479, 28.1888], 19);
 
-// Add the OpenStreetMap tile layer (the map background)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19, // How far you can zoom in
     attribution: '&copy; OpenStreetMap contributors' // Gives credit to OSM
 }).addTo(map);
 
-// --- Global Variables ---
+
 // Will store GPS points from CSV
 let points = [];
 // Will hold the moving bus marker
@@ -25,12 +24,6 @@ const ws = new WebSocket("wss://tshwanebusmate.onrender.com");
 function loadAndAnimate() {
     try {
         // Get CSV data stored inside a hidden <script> tag in HTML.
-        // For example:
-        // <script id="points" type="text/plain">
-        // lng,lat
-        // 28.123,-25.456
-        // 28.124,-25.457
-        // </script>
         const csvText = document.getElementById("points").textContent.trim();
 
         // Split the CSV into separate lines
@@ -66,7 +59,7 @@ function loadAndAnimate() {
         // --- Add the Bus Icon Marker ---
         const busIcon = L.icon({
             iconUrl: 'https://img.icons8.com/isometric/50/bus.png', // Bus image
-            iconSize: [30, 30],   // Width and height of the icon
+            iconSize: [35, 35],   // Width and height of the icon
             iconAnchor: [10, 15], // Where the icon "sits" on the map
             popupAnchor: [0, -40] // Where popups appear relative to the icon
         });
@@ -81,8 +74,6 @@ function loadAndAnimate() {
         // When a message is received from the WebSocket server...
         ws.onmessage = (event) => {
             try {
-                // Expecting a JSON message like:
-                // { "latitude": -25.754, "longitude": 28.232 }
                 const data = JSON.parse(event.data);
                 console.log("Received GPS:", data);
 
@@ -104,39 +95,4 @@ function loadAndAnimate() {
 }
 
 // --- Run the Function ---
-loadAndAnimate();        });
-
-        // --- Add bus marker ---
-        const busIcon = L.icon({
-            iconUrl: 'https://img.icons8.com/isometric/50/bus.png',
-            iconSize: [30, 30],
-            iconAnchor: [10, 15],
-            popupAnchor: [0, -40]
-        });
-
-        bus = L.marker(points[0], { icon: busIcon }).addTo(map);
-
-        // Fit map to show all points
-        map.fitBounds(points);
-
-        // --- Handle live GPS updates from WebSocket ---
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log("Received GPS:", data);
-
-                // update bus marker position
-                bus.setLatLng([data.latitude, data.longitude]);
-                map.setView([data.latitude, data.longitude], 13);
-            } catch (err) {
-                console.error("Bad JSON:", event.data, err);
-            }
-        };
-
-    } catch (error) {
-        console.error('Error loading points from CSV:', error);
-    }
-}
-
-// Start everything
 loadAndAnimate();
