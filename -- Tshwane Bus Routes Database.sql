@@ -189,6 +189,35 @@ JOIN trackerSR_stop fs ON f.from_stop_id = fs.id
 JOIN trackerSR_stop ts ON f.to_stop_id = ts.id
 ORDER BY r.route_number, f.fare_amount;
 
+/*CREATE DATABASE tshwane_busmate;
+USE tshwane_busmate;
+
+CREATE TABLE signups (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('commuter', 'driver', 'admin') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE logins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('commuter', 'driver', 'admin') NOT NULL,
+
+  -- Role-specific fields (nullable)
+  bus_card_no VARCHAR(50),     -- for commuters
+  driver_id VARCHAR(50),       -- for drivers
+  admin_id VARCHAR(50),        -- for admins
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+*/
+
+
 -- only "missing" parts are with connecting the database to the server permanently along with Slo and Mo's parts. additionaly idk how to facilitate the Ai part
 
 -- Test 1: Active routes
@@ -202,3 +231,4 @@ ORDER BY r.route_number, f.fare_amount;
 
 -- Test 4: Fares
 -- SELECT * FROM trackerSR_fare_prices WHERE route_number = 'A1';
+
