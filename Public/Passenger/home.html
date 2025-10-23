@@ -21,6 +21,7 @@
         line-height: 1.6;
         min-height: 100vh;
     }
+    
     body::before {
         content: "";
         position: fixed;
@@ -31,57 +32,98 @@
 
     .menu-toggle {
         position: fixed;
-        top: 30px;
+        top: 25px;
         left: 20px;
         font-size: 24px;
         color: #27ae60;
         cursor: pointer;
-        z-index: 1000;
+        z-index: 1001;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .menu-toggle:hover {
+        background: rgba(39, 174, 96, 0.2);
+        transform: scale(1.1);
     }
 
     .sidebar {
         position: fixed;
         top: 0;
-        left: -220px;
-        width: 200px;
+        left: -250px;
+        width: 250px;
         height: 100vh;
         background: #0d1b24;
         padding: 30px 0;
         transition: left 0.3s ease;
-        z-index: 999;
+        z-index: 1000;
         border-right: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 4px 0 15px rgba(0,0,0,0.3);
     }
 
-    .wrapper.active .sidebar { left: 0; }
+    .wrapper.active .sidebar { 
+        left: 0; 
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+    
+    .wrapper.active .sidebar-overlay {
+        display: block;
+    }
 
     .sidebar h2 {
         color: #FFD700;
         font-style: italic;
         text-align: center;
         margin-bottom: 30px;
+        font-size: 1.8rem;
     }
-    .sidebar ul { list-style: none; }
+    
+    .sidebar ul { 
+        list-style: none; 
+    }
+    
     .sidebar ul li {
-        padding: 15px;
+        padding: 15px 20px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         transition: background 0.3s ease;
+        cursor: pointer;
     }
+    
     .sidebar ul li a {
         color: #fafafc;
         text-decoration: none;
         font-size: 1rem;
         flex-grow: 1;
     }
-    .sidebar ul li:hover { background: rgba(255,255,255,0.05); }
-    .sidebar ul li:hover a { color: #27ae60; }
+    
+    .sidebar ul li:hover { 
+        background: rgba(255,255,255,0.05); 
+    }
+    
+    .sidebar ul li:hover a { 
+        color: #27ae60; 
+    }
+    
+    .sidebar ul li i {
+        width: 20px;
+    }
 
     nav.header-bar {
         width: 100%;
-        height: 15vh;
+        height: 80px;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         padding: 15px 40px;
         color: white;
@@ -92,8 +134,15 @@
         z-index: 100;
     }
 
+    nav.header-bar .logo {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
     nav.header-bar .logo h1 {
-        font-size: 2.2rem;
+        font-size: clamp(1.2rem, 4vw, 2.2rem);
         font-weight: 800;
         background: linear-gradient(to right, #fff 51%, #FFD700 49%);
         -webkit-background-clip: text;
@@ -102,215 +151,399 @@
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .auth-buttons button {
+        padding: 8px 20px;
+        border-radius: 25px;
+        border: none;
+        font-weight: bold;
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    
+    .login-btn {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+    }
+    
+    .login-btn:hover {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+    }
+    
+    .signup-btn {
+        background: linear-gradient(135deg, #FFD700, #FFC300);
+        color: #222;
+    }
+    
+    .signup-btn:hover {
+        background: linear-gradient(135deg, #FFC300, #FFD700);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
 
-   .container {
-    max-width: 1200px;
-    margin: 17vh auto 0;
-    padding: 20px;
-    width: 95%;
-}
+    .container {
+        max-width: 1200px;
+        margin: 100px auto 0;
+        padding: 20px;
+        width: 95%;
+    }
 
-    /* Welcome Card */
     .welcome-card {
-      background: rgba(255,255,255,0.07);
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      padding: 35px 30px 30px 30px;
-      text-align: center;
-      margin-bottom: 35px;
-      border: 1px solid rgba(255,255,255,0.1);
-      animation: fadeInDown 1s;
+        background: rgba(255,255,255,0.07);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        padding: 40px 30px;
+        text-align: center;
+        margin-bottom: 35px;
+        border: 1px solid rgba(255,255,255,0.1);
+        animation: fadeInDown 1s;
     }
+    
     .welcome-card h1 {
-      font-size: 2.5rem;
-      color: #27F531;
-      margin-bottom: 10px;
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        color: #27F531;
+        margin-bottom: 10px;
     }
+    
     .welcome-card h2 {
-      font-size: 2rem;
-      margin: 10px 0;
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        margin: 10px 0;
     }
+    
     .welcome-card h2 span {
-      color: #FFD700;
+        color: #FFD700;
     }
+    
     .welcome-card p {
-      font-size: 1.1rem;
-      margin: 10px 0 20px 0;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        margin: 15px 0 25px 0;
+        line-height: 1.8;
     }
+    
     .main-btn button {
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 30px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.3s;
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 35px;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 600;
     }
+    
     .main-btn button:hover {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
     }
 
-    /* Dropdowns */
     .dropdown {
-      margin-bottom: 18px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 8px;
-      padding: 12px 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      transition: box-shadow 0.2s;
+        margin-bottom: 18px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        padding: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        transition: all 0.3s;
+        border: 1px solid rgba(255,255,255,0.08);
     }
+    
+    .dropdown:hover {
+        background: rgba(255,255,255,0.07);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
     .dropdown label {
-      font-size: 1.2rem;
-      color: #FFD700;
-      cursor: pointer;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      user-select: none;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        color: #FFD700;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        user-select: none;
+        padding: 15px 20px;
     }
+    
     .dropdown label .fa-chevron-down {
-      transition: transform 0.3s;
+        transition: transform 0.3s;
+        margin-left: auto;
     }
+    
     .dropdown input[type="checkbox"] {
-      display: none;
+        display: none;
     }
+    
     .dropdown-content {
-      display: none;
-      margin-top: 10px;
-      background: #22384a;
-      border-radius: 6px;
-      padding: 10px 18px;
-      animation: fadeIn 0.5s;
+        display: none;
+        background: #1a2f3a;
+        border-radius: 0 0 10px 10px;
+        padding: 15px 20px 20px 20px;
+        animation: fadeIn 0.4s;
     }
+    
     .dropdown input[type="checkbox"]:checked ~ .dropdown-content {
-      display: block;
+        display: block;
     }
+    
     .dropdown input[type="checkbox"]:checked + label .fa-chevron-down {
-      transform: rotate(180deg);
+        transform: rotate(180deg);
     }
+    
     .dropdown-content ul {
-      margin-left: 15px;
-      color: #fff;
+        list-style: none;
+        margin-left: 0;
+        color: #fff;
     }
+    
+    .dropdown-content ul ul {
+        margin-left: 20px;
+        margin-top: 8px;
+    }
+    
+    .dropdown-content li {
+        padding: 6px 0;
+        line-height: 1.6;
+    }
+    
     .dropdown-content a {
-      color: #27F531;
-      text-decoration: underline;
+        color: #27F531;
+        text-decoration: none;
+        transition: color 0.2s;
     }
+    
     .dropdown-content a:hover {
-      color: #FFD700;
+        color: #FFD700;
+        text-decoration: underline;
     }
 
-    /* Map Section */
     .map {
-      margin-top: 40px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-top: 40px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.08);
     }
     
     .map h1 {
-      color: #FFD700;
-      margin-bottom: 15px;
+        color: #FFD700;
+        margin-bottom: 25px;
+        font-size: clamp(1.5rem, 4vw, 2rem);
     }
-    .map-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      align-items: flex-start;
-      justify-content: center;
-    }
-   .map-wrapper iframe {
-    width: 100%;
-    height: 400px; /* Default height */
-}
-    .map-text {
-      max-width: 350px;
-      color: #fff;
-    }.
     
-    map-text {
-    font-size: clamp(14px, 1.2vw, 16px);
-}
+    .map-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        align-items: flex-start;
+    }
+    
+    .map-wrapper iframe {
+        flex: 1;
+        min-width: 300px;
+        height: 450px;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .map-text {
+        flex: 1;
+        min-width: 280px;
+        color: #fff;
+    }
+    
     .map-text h2 {
-      color: #27F531;
-      margin-bottom: 10px;
+        color: #27F531;
+        margin-bottom: 15px;
+        font-size: clamp(1.3rem, 3vw, 1.8rem);
+    }
+    
+    .map-text p {
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        line-height: 1.8;
     }
 
     .footer {
-      margin-top: 40px;
-      padding: 20px 0 10px 0;
-      background: #0d1b24;
-      color: #fff;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.08);
+        margin-top: 50px;
+        padding: 30px 20px;
+        background: #0d1b24;
+        color: #fff;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
+    
     .footer .icons {
-      margin-bottom: 10px;
+        margin-bottom: 15px;
     }
+    
     .footer .icons a {
-      color: #FFD700;
-      margin: 0 10px;
-      font-size: 1.3rem;
-      transition: color 0.2s;
+        color: #FFD700;
+        margin: 0 12px;
+        font-size: 1.5rem;
+        transition: all 0.3s;
+        display: inline-block;
     }
+    
     .footer .icons a:hover {
-      color: #27F531;
+        color: #27F531;
+        transform: translateY(-3px);
     }
+    
+    .footer p {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+    
     .footer .designer {
-      color: #27F531;
-      font-weight: bold;
+        color: #27F531;
+        font-weight: bold;
     }
 
-    /* Animations */
     @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-40px);}
-      to { opacity: 1; transform: translateY(0);}
+        from { opacity: 0; transform: translateY(-40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
+    
     @keyframes fadeIn {
-      from { opacity: 0;}
-      to { opacity: 1;}
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    /* Responsive */
-    /* Responsive adjustments for tablet and smaller */
-@media (max-width: 900px) {
-    .container { padding: 15px; }
-    .map-wrapper { flex-direction: column; align-items: stretch; gap: 20px; }
-    nav.header-bar { padding: 10px 20px; }
-    .welcome-card h1 { font-size: 2rem; }
-    .welcome-card h2 { font-size: 1.5rem; }
-    .main-btn button { padding: 8px 25px; font-size: 1rem; }
-}
+    /* Tablet */
+    @media (max-width: 768px) {
+        nav.header-bar {
+            padding: 15px 20px;
+            height: 70px;
+        }
+        
+        .container {
+            margin-top: 90px;
+            padding: 15px;
+        }
+        
+        .welcome-card {
+            padding: 30px 20px;
+        }
+        
+        .map-wrapper {
+            flex-direction: column;
+        }
+        
+        .map-wrapper iframe {
+            width: 100%;
+            height: 400px;
+        }
+        
+        .auth-buttons button {
+            padding: 7px 16px;
+        }
+    }
 
-/* Smartphones */
-@media (max-width: 600px) {
-    .container { margin-top: 18vh; padding: 10px; }
-    .sidebar { width: 100vw; left: -100vw; }
-    .wrapper.active .sidebar { left: 0; }
-    nav.header-bar .logo h1 { font-size: 1.3rem; }
-    .welcome-card h1 { font-size: 1.6rem; }
-    .welcome-card h2 { font-size: 1.2rem; }
-    .main-btn button { padding: 6px 20px; font-size: 0.95rem; }
-    .map-wrapper iframe { height: 300px; }
-    .map-text { font-size: 14px; max-width: 100%; }
-}
+    /* Mobile */
+    @media (max-width: 480px) {
+        .menu-toggle {
+            top: 15px;
+            left: 15px;
+            font-size: 20px;
+            padding: 8px;
+        }
+        
+        nav.header-bar {
+            padding: 12px 15px;
+            height: 60px;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .auth-buttons {
+            position: static;
+            transform: none;
+        }
+        
+        .auth-buttons button {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+        
+        .sidebar {
+            width: 85vw;
+            left: -85vw;
+        }
+        
+        .wrapper.active .sidebar {
+            left: 0;
+        }
+        
+        .container {
+            margin-top: 80px;
+            padding: 12px;
+        }
+        
+        .welcome-card {
+            padding: 25px 15px;
+            margin-bottom: 25px;
+        }
+        
+        .dropdown {
+            margin-bottom: 15px;
+        }
+        
+        .dropdown label {
+            padding: 12px 15px;
+        }
+        
+        .dropdown-content {
+            padding: 12px 15px 15px 15px;
+        }
+        
+        .map {
+            padding: 20px 15px;
+        }
+        
+        .map-wrapper iframe {
+            height: 300px;
+            min-width: 100%;
+        }
+        
+        .footer {
+            padding: 25px 15px;
+        }
+        
+        .footer .icons a {
+            margin: 0 8px;
+            font-size: 1.3rem;
+        }
+    }
 
-/* Extra small devices (phones in portrait) */
-@media (max-width: 400px) {
-    .welcome-card { padding: 25px 15px 20px 15px; }
-    .main-btn button { padding: 5px 15px; font-size: 0.9rem; }
-    .map-wrapper iframe { height: 250px; }
-    .dropdown label { font-size: 1rem; }
-    .sidebar ul li { padding: 12px; }
-}
-
-/* Minor enhancements */
-.sidebar ul li a {
-    font-size: clamp(0.9rem, 2vw, 1rem);
-}
+    /* Extra small devices */
+    @media (max-width: 360px) {
+        .sidebar {
+            width: 100vw;
+            left: -100vw;
+        }
+        
+        .welcome-card {
+            padding: 20px 12px;
+        }
+        
+        .main-btn button {
+            padding: 10px 25px;
+        }
+        
+        .map-wrapper iframe {
+            height: 250px;
+        }
+    }
   </style>
 </head>
 <body>
@@ -319,54 +552,54 @@
   </div>
 
   <div class="wrapper">
-    <!-- Sidebar (from login.html) -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
     <div class="sidebar">
       <h2>TBM</h2>
       <ul>
-        <li><a href="home.html"><i class="fa-solid fa-house"></i> Home</a></li>
-        <li><a href="About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
-        <li><a href="OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
-        <li><a href="Credit_Payment/credit_wallet.html"><i class="fa-solid fa-bus"></i> Bus card</a></li>
-
+        <li><a href="/Passenger/home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="/Passenger/About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
+        <li><a href="/Passenger/OnClickRoutes.html"><i class="fa-solid fa-map-location"></i> Bus Routes</a></li>
+        <li><a href="/Passenger/Payment Gate.php"><i class="fa-solid fa-credit-card"></i> Bus card</a></li>
       </ul>
     </div>
 
-    <!-- Header Bar (from login.html) -->
     <nav class="header-bar">
-      <div class="logo" style="flex:1; display:flex; justify-content:center; align-items:center;">
+      <div class="logo">
         <h1>TSHWANE<span>BUSMATE</span></h1>
       </div>
-      <div style="position:absolute; right:40px; top:50%; transform:translateY(-50%); display:flex; gap:15px;">
-        <a href="login.html" style="text-decoration:none;">
-          <button style="padding:8px 22px; border-radius:25px; border:none; background:linear-gradient(135deg,#27ae60,#2ecc71); color:#fff; font-weight:bold; font-size:1rem; cursor:pointer; transition:background 0.3s;">Log In</button>
+      <div class="auth-buttons">
+        <a href="/Passenger/login.html" style="text-decoration:none;">
+          <button class="login-btn">Log In</button>
         </a>
-        <a href="signup.php" style="text-decoration:none;">
-          <button style="padding:8px 22px; border-radius:25px; border:none; background:linear-gradient(135deg,#FFD700,#FFC300); color:#222; font-weight:bold; font-size:1rem; cursor:pointer; transition:background 0.3s;">Sign Up</button>
+        <a href="/Passenger/signup.php" style="text-decoration:none;">
+          <button class="signup-btn">Sign Up</button>
         </a>
       </div>
     </nav>
 
     <div class="container">
-      <!-- Welcome Card on Top -->
       <div class="welcome-card" id="welcomeCard">
         <h1>Welcome!</h1>
         <h2>To <span>TshwaneBusMate</span></h2>
         <p>Choose us because we choose YOU! Read more on our <span style="color:#FFD700; font-weight:bold;">About</span> page.</p>
         <div class="main-btn">
-          <a href=""Passenger/About page.html"><button>About</button></a>
+          <a href="/Passenger/About page.html"><button>About</button></a>
         </div>
       </div>
 
-      <!--Interactive Bus Area Dropdowns--> 
       <section class="Bus" id="busSection">
         <div class="dropdown">
           <input type="checkbox" id="cen">
-          <label for="cen"><i class="fa-solid fa-chevron-down"></i> Centurion</label>
+          <label for="cen">
+            <i class="fa-solid fa-location-dot"></i>
+            Centurion
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
-              <li><strong>Areas:</strong></li>
+              <li><strong>Bus Routes:</strong></li>
               <ul>
-                <li>bus Routes</li>
                 <li><a href="Centurion.html">ROUTE 4 - Olievenhoutbos to Centurion via Highveld - Ecopark - Southdowns</a></li>
                 <li>ROUTE 7 - Olievenhoutbos to Wierdapark - Eldoraine - Clubview A</li>
                 <li>Route 9</li>
@@ -379,7 +612,11 @@
 
         <div class="dropdown">
           <input type="checkbox" id="pc">
-          <label for="pc"><i class="fa-solid fa-chevron-down"></i> Pretoria Central</label>
+          <label for="pc">
+            <i class="fa-solid fa-location-dot"></i>
+            Pretoria Central
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
               <li><strong>Areas:</strong></li>
@@ -394,9 +631,14 @@
             </ul>
           </div>
         </div>
+
         <div class="dropdown">
           <input type="checkbox" id="pe">
-          <label for="pe"><i class="fa-solid fa-chevron-down"></i> Pretoria East</label>
+          <label for="pe">
+            <i class="fa-solid fa-location-dot"></i>
+            Pretoria East
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
               <li><strong>Areas:</strong></li>
@@ -428,7 +670,11 @@
 
         <div class="dropdown">
           <input type="checkbox" id="pmo">
-          <label for="pmo"><i class="fa-solid fa-chevron-down"></i> Pretoria Moot</label>
+          <label for="pmo">
+            <i class="fa-solid fa-location-dot"></i>
+            Pretoria Moot
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
               <li><strong>Areas:</strong></li>
@@ -445,7 +691,11 @@
 
         <div class="dropdown">
           <input type="checkbox" id="pn">
-          <label for="pn"><i class="fa-solid fa-chevron-down"></i> Pretoria North</label>
+          <label for="pn">
+            <i class="fa-solid fa-location-dot"></i>
+            Pretoria North
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
               <li><strong>Areas:</strong></li>
@@ -474,7 +724,11 @@
 
         <div class="dropdown">
           <input type="checkbox" id="pw">
-          <label for="pw"><i class="fa-solid fa-chevron-down"></i> Pretoria West</label>
+          <label for="pw">
+            <i class="fa-solid fa-location-dot"></i>
+            Pretoria West
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
           <div class="dropdown-content">
             <ul>
               <li><strong>Areas:</strong></li>
@@ -496,58 +750,33 @@
         </div>  
       </section>
 
-      <!-- Map Section -->
       <section class="map" id="aboutSection">
-        <h1>Map</h1>
+        <h1>Live Traffic Map</h1>
         <div class="map-wrapper">
           <iframe 
             src="https://embed.waze.com/iframe?zoom=14&lat=-26.2361&lon=28.3694&ct=livemap" 
-            width="600" 
-            height="450" 
             allowfullscreen>
           </iframe>
           <div class="map-text">
             <h2>Live Traffic View</h2>
-            <p>Stay ahead of delays! Use our real-time map to track traffic and plan your bus journey with ease.</p>
+            <p>Stay ahead of delays! Use our real-time map to track traffic and plan your bus journey with ease. Get live updates on road conditions, accidents, and optimal routes to ensure you reach your destination on time.</p>
           </div>
         </div>
       </section>
 
       <div class="footer">
         <div class="icons">
-            <a href="https://twitter.com/?lang=en-za"><i class="fa-brands fa-twitter"></i></a>
-            <a href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a>
-            <a href="https://www.instagram.com/"><i class="fa-brands fa-square-instagram"></i></a>
+            <a href="https://twitter.com/?lang=en-za" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://www.facebook.com/" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/" aria-label="Instagram"><i class="fa-brands fa-square-instagram"></i></a>
         </div>
-        <p>Copyright &copy;2025; Designed by <span class="designer"> Tshwane</span></p>
+        <p>Copyright &copy;2025; Designed by <span class="designer">Tshwane BusMate Team</span></p>
       </div>
     </div>
   </div>
 
-  <!-- Chatbot Integration Start -->
-  <link rel="stylesheet" href="chat.css">
-  <section class="chat-window" style="display:flex; background:#fff; color:#222;">
-      <button class="close" style="color:#fff;">x close</button>
-      <div class="chat">
-          <div class="model">
-              <p style="color:#222;">Hi, how can I help you?</p>
-          </div>
-      </div>
-      <div class="input-area">
-          <input placeholder="Ask me anything..." type="text" style="color:#222;">
-          <button>
-              <img src="send-icon.png" alt="send">
-          </button>
-      </div>
-  </section>
-  <div class="chat-button">
-      <img src="chat-icon.png" alt="start chat">
-  </div>
-  <script src="chat.js"></script>
-  
   <script>
- // checks to see whether browser supports service worker use 
-    if ('serviceWorker' in navigator){
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
       .then(registration => {
         console.log("Service Worker registered with scope:", registration.scope);
@@ -557,44 +786,10 @@
       });
     }
 
-    // Chatbot open/close logic
-    document.addEventListener("DOMContentLoaded", function() {
-      const chatWindow = document.querySelector('.chat-window');
-      const chatButton = document.querySelector('.chat-button');
-      const closeBtn = document.querySelector('.chat-window .close');
-
-      // Show chat when chat button is clicked
-      chatButton.addEventListener('click', function() {
-        chatWindow.style.display = 'flex';
-      });
-
-      // Hide chat when close button is clicked
-      closeBtn.addEventListener('click', function() {
-        chatWindow.style.display = 'none';
-      });
-    });
-  </script>
-  <!-- Chatbot Integration End -->
-
-  <script>
     function toggleSidebar() {
       document.querySelector('.wrapper').classList.toggle('active');
     }
-    window.addEventListener('click', function(e) {
-      const wrapper = document.querySelector('.wrapper');
-      const sidebar = document.querySelector('.sidebar');
-      const toggle = document.querySelector('.menu-toggle');
-      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
-        wrapper.classList.remove('active');
-      }
-    });
 
-    // Scroll to About section when About button is clicked
-    function scrollToAbout() {
-      document.getElementById('aboutSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Enhance dropdowns: close others when one is opened
     document.querySelectorAll('.dropdown input[type="checkbox"]').forEach(function(checkbox) {
       checkbox.addEventListener('change', function() {
         if (this.checked) {
