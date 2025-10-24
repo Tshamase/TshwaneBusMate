@@ -1,0 +1,100 @@
+<!--Signup success page HTML structure-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Successful - TshwaneBusMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <!--Inline styles for success card-->
+    <style>
+        .success-card {
+            max-width: 600px;
+            margin: 160px auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .success-card h2 {
+            font-size: 32px;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .success-card p {
+            font-size: 18px;
+            color: #bbb;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: rgba(39, 174, 96, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            margin: 20px 0;
+        }
+
+        .highlight h3 {
+            color: #27ae60;
+            margin: 0 0 10px 0;
+        }
+
+        .highlight p {
+            color: #fff;
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!--Header bar with logo only-->
+    <nav class="header-bar">
+        <div class="logo">
+            <h1>TSHWANE<span>BUSMATE</span></h1>
+        </div>
+    </nav>
+
+    <!--Main success message card-->
+    <div class="success-card">
+    <h2>Digital Signup Successful</h2>
+    <p>Welcome to TshwaneBusMate! Your email has been verified and your account creation process has just started.</p>
+
+    <!--Highlighted next steps section-->
+    <div class="highlight">
+        <h3>Next Steps</h3>
+        <p>To complete your registration and access your bus card, please visit the nearest Tshwane Bus Station with your ID.</p>
+    </div>
+
+    <p>Once you receive your bus card number at the station, you can log in to your account using that number.</p>
+
+    <!--Home page navigation button-->
+    <a href="home.html" class="btn">Go to Home</a>
+    </div>
+
+    <!--JavaScript includes-->
+    <script src="js/sidebar.js"></script>
+</body>
+</html>

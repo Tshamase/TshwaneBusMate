@@ -54,7 +54,7 @@
       </form>
       <br>
       <!--Terms and login links-->
-      <p>By clicking the button, you agree to our <br><a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a></p><br>
+      <p>By clicking the button, you agree to our <br><a href="file:///C:/xampp/htdocs/finalproject/FINAL/TBM.pdf">Terms and Conditions</a> and <a href="file:///C:/xampp/htdocs/finalproject/FINAL/P&P.pdf">Privacy Policy</a></p><br>
       <p>Already have an account? <a href="login.html">Log In here</a></p>
     </div>
   </div>
