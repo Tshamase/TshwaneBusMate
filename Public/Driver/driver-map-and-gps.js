@@ -1,5 +1,5 @@
 // --- SETUP MAP ---
-const map = L.map('map').setView([-25.7479, 28.1888], 21);
+const map = L.map('map').setView([-25.7479, 28.1888], 20);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -70,7 +70,7 @@ ws.onopen = () => {
 
                     if (driverMarker) {
                         driverMarker.setLatLng([data.latitude, data.longitude]);
-                        map.setView([data.latitude, data.longitude], 13);
+                        map.setView([data.latitude, data.longitude], 20);
                     }
 
                     if (ws.readyState === WebSocket.OPEN) {
