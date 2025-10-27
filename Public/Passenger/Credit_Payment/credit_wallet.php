@@ -2,13 +2,10 @@
 session_start();
 
 // Check if user is logged in - redirect to login if not
-if (!isset($_SESSION['user'])) {
-  header("Location: ../login.php"); // Adjust path as needed
-  exit();
-}
+  // Wil perfom operations in the future.
 
 include 'db_payment.php';
-$userId = $_SESSION['user']['id'] ?? 1; // Get user ID from session
+$//userId = $_SESSION['user']['id'] ?? 1; // Get user ID from session
 
 // Get the latest balance for the user
 $query = "SELECT balance FROM transactions WHERE user_id = ? ORDER BY id DESC LIMIT 1";
@@ -140,7 +137,7 @@ $stmt->close();
         <a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a>
       </li>
       <li>
-        <a href="Credit Wallet.php"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a>
+        <a href="credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a>
       </li>
       <li>
         <a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a>
@@ -150,7 +147,6 @@ $stmt->close();
 
   <header>
     <h1>TshwaneBusMate</h1>
-    <p>On the move for people</p>
   </header>
 
   <div class="balance">

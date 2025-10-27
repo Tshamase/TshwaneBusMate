@@ -3,12 +3,9 @@ session_start();
 include 'db_payment.php';
 
 // Check if user is logged in
-if (!isset($_SESSION['user'])) {
-    header("Location: credit_wallet.html");
-    exit();
-}
+    // Will perform operation in the future.
 
-$username = $_SESSION['user'];
+//$username = $_SESSION['user'];
 $userId = 1; // Example user ID - in production, get from session
 
 // Handle search and filters
@@ -307,7 +304,7 @@ $result = $stmt->get_result();
 <body>
     <header>
         <h1>TshwaneBusMate</h1>
-        <a href="Credit Wallet.php" class="back-button">
+        <a href="credit_wallet.html" class="back-button">
             <i class="fas fa-arrow-left"></i> Back
         </a>
     </header>
