@@ -111,116 +111,120 @@
   </head>
 
   <body>
-    <!-- Page header -->
-    <header>
-      <div class="header-container">
-        <div class="logo">
-          <h1>TshwaneBusMate</h1>
+    <div id="main-content">
+      <!-- Page header -->
+      <header>
+        <div class="header-container">
+          <div class="logo">
+            <h1>TshwaneBusMate</h1>
+          </div>
+          <button
+            class="back-button"
+            onclick="window.location.href='credit_wallet.html'"
+          >
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
         </div>
-        <button
-          class="back-button"
-          onclick="window.location.href='credit_wallet.html'"
-        >
-          <i class="fas fa-arrow-left"></i> Back
-        </button>
-      </div>
-    </header>
+      </header>
 
-    <main>
-      <!-- Left side: form for choosing action -->
-      <div class="content-container">
-        <h2>Payment Gateway</h2>
+      <main>
+        <!-- Left side: form for choosing action -->
+        <div class="content-container">
+          <h2>Payment Gateway</h2>
 
-        <form id="invoicePayment" method="post" action="payment_gateway.php">
-          <div class="form-group">
-            <label for="actionSelect">Choose action</label>
-            <select id="actionSelect" name="action" required>
-              <option value="" disabled selected>-- Select an option --</option>
-              <option value="reload">Reload credits (Add to balance)</option>
-              <option value="purchase">Purchase product</option>
-            </select>
-          </div>
-
-          <!-- Reload fields -->
-          <div id="reloadFields" class="hidden">
+          <form id="invoicePayment" method="post" action="payment_gateway.php">
             <div class="form-group">
-              <label for="reloadAmount">Reload amount (ZAR)</label>
-              <input
-                id="reloadAmount"
-                name="reloadAmount"
-                type="number"
-                min="11"
-                max="3000"
-                step="0.01"
-                placeholder="Enter amount"
-              />
+              <label for="actionSelect">Choose action</label>
+              <select id="actionSelect" name="action" required>
+                <option value="" disabled selected>
+                  -- Select an option --
+                </option>
+                <option value="reload">Reload credits (Add to balance)</option>
+                <option value="purchase">Purchase product</option>
+              </select>
             </div>
-          </div>
 
-          <!-- Purchase fields -->
-          <div id="purchaseFields" class="hidden">
-            <div class="form-group">
-              <label>Select product(s)</label>
-              <div id="packageList">
-                <div class="packageItem">
-                  <select name="product[]" required>
-                    <option value="" disabled selected>
-                      -- Choose product --
-                    </option>
-                    <option value="20">Connector 20 - ZAR 20.00</option>
-                    <option value="60">Connector 60 - ZAR 60.00</option>
-                    <option value="80">Connector 80 - ZAR 80.00</option>
-                    <option value="100">Connector 100 - ZAR 100.00</option>
-                    <option value="150">Connector 150 - ZAR 150.00</option>
-                    <option value="200">Connector 200 - ZAR 200.00</option>
-                    <option value="350">Connector 350 - ZAR 350.00</option>
-                    <option value="500">Connector 500 - ZAR 500.00</option>
-                  </select>
-                  <button type="button" class="btn-remove">Remove</button>
+            <!-- Reload fields -->
+            <div id="reloadFields" class="hidden">
+              <div class="form-group">
+                <label for="reloadAmount">Reload amount (ZAR)</label>
+                <input
+                  id="reloadAmount"
+                  name="reloadAmount"
+                  type="number"
+                  min="11"
+                  max="3000"
+                  step="0.01"
+                  placeholder="Enter amount"
+                />
+              </div>
+            </div>
+
+            <!-- Purchase fields -->
+            <div id="purchaseFields" class="hidden">
+              <div class="form-group">
+                <label>Select product(s)</label>
+                <div id="packageList">
+                  <div class="packageItem">
+                    <select name="product[]" required>
+                      <option value="" disabled selected>
+                        -- Choose product --
+                      </option>
+                      <option value="20">Connector 20 - ZAR 20.00</option>
+                      <option value="60">Connector 60 - ZAR 60.00</option>
+                      <option value="80">Connector 80 - ZAR 80.00</option>
+                      <option value="100">Connector 100 - ZAR 100.00</option>
+                      <option value="150">Connector 150 - ZAR 150.00</option>
+                      <option value="200">Connector 200 - ZAR 200.00</option>
+                      <option value="350">Connector 350 - ZAR 350.00</option>
+                      <option value="500">Connector 500 - ZAR 500.00</option>
+                    </select>
+                    <button type="button" class="btn-remove">Remove</button>
+                  </div>
+                </div>
+                <div class="package-controls">
+                  <button type="button" id="addPackageBtn" class="btn-add">
+                    Add package
+                  </button>
+                  <small style="color: #aaa"
+                    >You may add up to 3 packages in total.</small
+                  >
                 </div>
               </div>
-              <div class="package-controls">
-                <button type="button" id="addPackageBtn" class="btn-add">
-                  Add package
-                </button>
-                <small style="color: #aaa"
-                  >You may add up to 3 packages in total.</small
-                >
-              </div>
             </div>
-          </div>
 
-          <!-- Invoice Summary -->
-          <div style="margin-top: 30px">
-            <a href="#" id="toggleInvoiceLink" class="toggle-link hidden"
-              >View invoice</a
-            >
-            <div id="invoiceSummary" class="invoice hidden">
-              <h3>Invoice</h3>
-              <ul id="invoiceItems"></ul>
-              <div class="total">
-                <span>Total</span><span id="invoiceTotal">ZAR 0.00</span>
+            <!-- Invoice Summary -->
+            <div style="margin-top: 30px">
+              <a href="#" id="toggleInvoiceLink" class="toggle-link hidden"
+                >View invoice</a
+              >
+              <div id="invoiceSummary" class="invoice hidden">
+                <h3>Invoice</h3>
+                <ul id="invoiceItems"></ul>
+                <div class="total">
+                  <span>Total</span><span id="invoiceTotal">ZAR 0.00</span>
+                </div>
+                <div id="invoicePaying" class="hidden"></div>
               </div>
-              <div id="invoicePaying" class="hidden"></div>
+              <button
+                id="proceedPay"
+                class="btn-proceed"
+                style="margin-top: 30px"
+              >
+                Proceed to Pay
+              </button>
             </div>
-            <button
-              id="proceedPay"
-              class="btn-proceed"
-              style="margin-top: 30px"
-            >
-              Proceed to Pay
-            </button>
-          </div>
-        </form>
-      </div>
-    </main>
+          </form>
+        </div>
+      </main>
 
-    <!-- Footer -->
-    <footer>
-      <div class="copyright">
-        Copyright &copy; 2025 City of Tshwane. All rights reserved.
-      </div>
-    </footer>
+      <!-- Footer -->
+      <footer>
+        <div class="copyright">
+          Copyright &copy; 2025 City of Tshwane. All rights reserved.
+        </div>
+      </footer>
+    </div>
 
     <!-- Notification Dialog -->
     <div id="notificationDialog" class="notification-dialog">
@@ -230,6 +234,22 @@
           <i class="fas fa-info-circle"></i>
         </div>
         <div class="notification-message"></div>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Confirm Your Selection</h3>
+        </div>
+        <div class="modal-body">
+          <pre id="confirmationMessage"></pre>
+        </div>
+        <div class="modal-footer">
+          <button id="confirmCancel" class="btn-cancel">Cancel</button>
+          <button id="confirmOk" class="btn-ok">OK</button>
+        </div>
       </div>
     </div>
 

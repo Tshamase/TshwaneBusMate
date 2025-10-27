@@ -1,10 +1,10 @@
 (function () {
-  // Helper: format number as ZAR currency string
+  // Formater for number as ZAR currency
   function formatZAR(value) {
     return "ZAR " + value.toFixed(2);
   }
 
-  // Simple field error helpers for feedback
+  // Simple field error for feedback
   function showFieldError(el, msg) {
     if (!el) return;
     el.style.borderColor = "#e74c3c";
@@ -93,12 +93,11 @@
   function handleRemoveClick(e) {
     var items = packageList.querySelectorAll(".packageItem");
     if (items.length === 1) {
-      // If this is the last item, reset selection and action
+      // Reset selection and action
       items[0].querySelector("select").selectedIndex = 0;
       actionSelect.value = "";
       actionSelect.dispatchEvent(new Event("change"));
     } else {
-      // Remove the item
       e.target.closest(".packageItem").remove();
       // Reorder remaining items by reappending them to ensure DOM order
       var remainingItems = packageList.querySelectorAll(".packageItem");
@@ -217,7 +216,7 @@
     invoicePaying.textContent = "";
   }
 
-  // Function to calculate discount based on package value
+  // Calculates discount based on package value
   function calculatePackageDiscount(packageValue) {
     var discountRate = 0;
 
@@ -242,7 +241,7 @@
     return packageValue * discountRate;
   }
 
-  // Function to calculate credits based on package value
+  // Calculates credits based on package value
   function calculatePackageCredits(packageValue) {
     if (packageValue === 20) {
       return 20;
@@ -276,7 +275,7 @@
     updateInvoice();
   });
 
-  // Notification functions
+  // Notification dialouge
   function showNotification(message, type = "info") {
     var dialog = document.getElementById("notificationDialog");
     var icon = dialog.querySelector(".notification-icon");
@@ -316,7 +315,8 @@
   });
 
   // Validation and submit
-  proceedPay.addEventListener("click", function () {
+  proceedPay.addEventListener("click", function (e) {
+    e.preventDefault();
     var firstInvalid = null;
     function markInvalid(el, msg) {
       if (!firstInvalid) firstInvalid = el;
@@ -371,11 +371,64 @@
       return;
     }
 
-    // Show processing notification
-    showNotification("Processing your payment request...", "info");
+    // Build confirmation message with selected options
+    var confirmationMessage = "Please confirm your selection:\n\n";
+    if (action === "reload") {
+      confirmationMessage += "Action: Reload credits\n";
+      confirmationMessage += "Amount: " + formatZAR(amt) + "\n";
+    } else if (action === "purchase") {
+      confirmationMessage += "Action: Purchase product(s)\n";
+      selects.forEach(function (s, i) {
+        var val = parseFloat(s.value) || 0;
+        if (val > 0) {
+          var label = s.options[s.selectedIndex]
+            ? s.options[s.selectedIndex].text.replace(/\s+-\s+ZAR.*$/, "")
+            : "Product " + (i + 1);
+          confirmationMessage +=
+            "Product " + (i + 1) + ": " + label + " - " + formatZAR(val) + "\n";
+        }
+      });
+    }
+    confirmationMessage +=
+      "\nTotal: " +
+      formatZAR(totalValue) +
+      "\n\nDo you approve and want to proceed to pay?";
 
-    // Submit the form to payment_gateway.php
-    document.getElementById("invoicePayment").submit();
+    // Show confirmation modal
+    var modal = document.getElementById("confirmationModal");
+    var messageEl = document.getElementById("confirmationMessage");
+    messageEl.textContent = confirmationMessage;
+    modal.classList.add("show");
+
+    // Blur the main content
+    document.getElementById("main-content").style.filter = "blur(5px)";
+
+    // Handle modal buttons
+    var confirmOk = document.getElementById("confirmOk");
+    var confirmCancel = document.getElementById("confirmCancel");
+
+    var handleConfirm = function () {
+      modal.classList.remove("show");
+      document.getElementById("main-content").style.filter = "";
+      confirmOk.removeEventListener("click", handleConfirm);
+      confirmCancel.removeEventListener("click", handleCancel);
+
+      // Show processing notification
+      showNotification("Processing your payment request...", "info");
+
+      // Redirect to working.html instead of submitting form
+      window.location.href = "working.html";
+    };
+
+    var handleCancel = function () {
+      modal.classList.remove("show");
+      document.getElementById("main-content").style.filter = "";
+      confirmOk.removeEventListener("click", handleConfirm);
+      confirmCancel.removeEventListener("click", handleCancel);
+    };
+
+    confirmOk.addEventListener("click", handleConfirm);
+    confirmCancel.addEventListener("click", handleCancel);
   });
 
   // Display session errors on page load
