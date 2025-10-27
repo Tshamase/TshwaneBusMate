@@ -60,11 +60,10 @@
     var items = packageList.querySelectorAll(".packageItem");
     items.forEach(function (it, idx) {
       var btn = it.querySelector(".btn-remove");
-      btn.style.display = "inline-block"; // Show remove button for all items
+      btn.style.display = "inline-block";
     });
     addPackageBtn.disabled = items.length >= 3;
 
-    // Show/hide buttons based on package count
     var packageCount = items.length;
     if (packageCount === 1) {
       addPackageBtn.style.display = "inline-block";
@@ -84,17 +83,34 @@
     sel.selectedIndex = 0;
     var removeBtn = clone.querySelector(".btn-remove");
     removeBtn.style.display = "";
-    removeBtn.addEventListener("click", function () {
-      clone.remove();
-      updateRemoveButtons();
-      attachSelectListeners();
-      updateInvoice();
-    });
+    removeBtn.addEventListener("click", handleRemoveClick);
     packageList.appendChild(clone);
     updateRemoveButtons();
     attachSelectListeners();
     updateInvoice();
   });
+
+  function handleRemoveClick(e) {
+    var items = packageList.querySelectorAll(".packageItem");
+    if (items.length === 1) {
+      // If this is the last item, reset selection and action
+      items[0].querySelector("select").selectedIndex = 0;
+      actionSelect.value = "";
+      actionSelect.dispatchEvent(new Event("change"));
+    } else {
+      // Remove the item
+      e.target.closest(".packageItem").remove();
+      // Reorder remaining items by reappending them to ensure DOM order
+      var remainingItems = packageList.querySelectorAll(".packageItem");
+      packageList.innerHTML = ""; // Clear the list
+      remainingItems.forEach(function (item) {
+        packageList.appendChild(item);
+      });
+      updateRemoveButtons();
+      attachSelectListeners();
+    }
+    updateInvoice();
+  }
 
   // Attach change listener to all product selects
   function attachSelectListeners() {
@@ -109,7 +125,10 @@
 
   (function initPackageControls() {
     var firstRemove = packageList.querySelector(".btn-remove");
-    if (firstRemove) firstRemove.style.display = "inline-block"; // Show remove button for first item
+    if (firstRemove) {
+      firstRemove.style.display = "inline-block";
+      firstRemove.addEventListener("click", handleRemoveClick);
+    }
     attachSelectListeners();
     updateRemoveButtons();
   })();
