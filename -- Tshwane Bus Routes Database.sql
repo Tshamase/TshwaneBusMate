@@ -1,6 +1,5 @@
 
-
--- 1. Create dedicated user
+-- Create dedicated user
 DO $$
 BEGIN
    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'tshwane_user') THEN
@@ -11,20 +10,48 @@ $$;
 
 GRANT ALL PRIVILEGES ON DATABASE tshwane_bus_db TO tshwane_user;
 
-
+-- Drop existing tables and views if they exist
 DROP TABLE IF EXISTS trackerSR_fares CASCADE;
 DROP TABLE IF EXISTS trackerSR_schedules CASCADE;
 DROP TABLE IF EXISTS trackerSR_stop_routes CASCADE;
 DROP TABLE IF EXISTS trackerSR_bus CASCADE;
 DROP TABLE IF EXISTS trackerSR_stop CASCADE;
 DROP TABLE IF EXISTS trackerSR_route CASCADE;
+DROP TABLE IF EXISTS signups CASCADE;
+DROP TABLE IF EXISTS logins CASCADE;
 
 DROP VIEW IF EXISTS trackerSR_active_routes;
 DROP VIEW IF EXISTS trackerSR_route_details;
 DROP VIEW IF EXISTS trackerSR_todays_schedule;
 DROP VIEW IF EXISTS trackerSR_fare_prices;
 
+CREATE TYPE user_role AS ENUM ('commuter', 'driver', 'admin');
 
+-- Signups table
+CREATE TABLE signups (
+  id SERIAL PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role user_role NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Logins table 
+CREATE TABLE logins (
+  id SERIAL PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role user_role NOT NULL,
+
+  -- Role-specific fields (nullable)
+  bus_card_no VARCHAR(50),     -- for commuters
+  driver_id VARCHAR(50),       -- for drivers
+  admin_id VARCHAR(50),        -- for admins
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Routes
 CREATE TABLE trackerSR_route (
@@ -40,27 +67,26 @@ CREATE TABLE trackerSR_route (
     status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active','Inactive','Temporary'))
 );
 
--- Stops
+-- Stops 
 CREATE TABLE trackerSR_stop (
     id SERIAL PRIMARY KEY,
-    route_id INTEGER NOT NULL REFERENCES trackerSR_route(id) ON DELETE CASCADE,
     stop_name VARCHAR(100) NOT NULL,
-    stop_sequence INTEGER NOT NULL,
     latitude NUMERIC(10,8),
     longitude NUMERIC(11,8),
     is_transfer_point BOOLEAN DEFAULT FALSE,
     has_shelter BOOLEAN DEFAULT FALSE
 );
 
--- Many-to-Many junction (Stop ↔ Route)
+-- Many-to-Many junction (Stop ↔ Route, moved stop_sequence here)
 CREATE TABLE trackerSR_stop_routes (
     id SERIAL PRIMARY KEY,
     stop_id INTEGER NOT NULL REFERENCES trackerSR_stop(id) ON DELETE CASCADE,
     route_id INTEGER NOT NULL REFERENCES trackerSR_route(id) ON DELETE CASCADE,
+    stop_sequence INTEGER NOT NULL,
     UNIQUE(stop_id, route_id)
 );
 
--- Buses Dj and lindo, verify on your side
+-- Buses
 CREATE TABLE trackerSR_bus (
     id SERIAL PRIMARY KEY,
     route_id INTEGER NOT NULL REFERENCES trackerSR_route(id) ON DELETE CASCADE,
@@ -107,38 +133,52 @@ INSERT INTO trackerSR_route (route_number, route_name, origin, destination, oper
 ('T1', 'Tshwane BRT - Red Line', 'Pretoria Station', 'Hermanstad Depot', '04:45-23:00', '10-15 mins', 14.2, '35-45 mins'),
 ('T2', 'Tshwane BRT - Blue Line', 'Hatfield Station', 'Fountains Valley', '05:00-22:30', '12-18 mins', 11.7, '30-40 mins');
 
--- Stops for A1
-INSERT INTO trackerSR_stop (route_id, stop_name, stop_sequence, is_transfer_point, has_shelter, latitude, longitude) VALUES
-(1, 'Church Square', 1, TRUE, TRUE, -25.74610000, 28.18810000),
-(1, 'Bosman Station', 2, TRUE, TRUE, -25.75100000, 28.18900000),
-(1, 'Pretoria Station', 3, TRUE, TRUE, -25.75800000, 28.19000000),
-(1, 'Madiba Street', 4, FALSE, TRUE, -25.76200000, 28.19500000),
-(1, 'Pretoria West', 5, FALSE, FALSE, -25.77000000, 28.20000000),
-(1, 'Lucas Mangope', 6, FALSE, FALSE, -25.77500000, 28.21000000),
-(1, 'Mamelodi Crossing', 7, TRUE, TRUE, -25.71000000, 28.36000000),
-(1, 'Mamelodi CBD', 8, TRUE, TRUE, -25.70500000, 28.37000000);
+-- Insert unique stops 
+INSERT INTO trackerSR_stop (stop_name, is_transfer_point, has_shelter, latitude, longitude) VALUES
+('Church Square', TRUE, TRUE, -25.74610000, 28.18810000),
+('Bosman Station', TRUE, TRUE, -25.75100000, 28.18900000),
+('Pretoria Station', TRUE, TRUE, -25.75800000, 28.19000000),
+('Madiba Street', FALSE, TRUE, -25.76200000, 28.19500000),
+('Pretoria West', FALSE, FALSE, -25.77000000, 28.20000000),
+('Lucas Mangope', FALSE, FALSE, -25.77500000, 28.21000000),
+('Mamelodi Crossing', TRUE, TRUE, -25.71000000, 28.36000000),
+('Mamelodi CBD', TRUE, TRUE, -25.70500000, 28.37000000),
+('Marabastad', TRUE, TRUE, -25.74500000, 28.18500000),
+('Boom Street', FALSE, TRUE, -25.74000000, 28.18000000),
+('Hamilton Street', FALSE, TRUE, -25.73500000, 28.17500000),
+('Civic Centre', TRUE, TRUE, -25.73000000, 28.17000000),
+('Pretoria Art Museum', FALSE, TRUE, -25.72500000, 28.16500000),
+('Union Buildings', TRUE, TRUE, -25.72000000, 28.16000000),
+('Hermanstad Depot', TRUE, TRUE, -25.71500000, 28.15500000);
 
--- Stops for T1 (BRT Red Line)
-INSERT INTO trackerSR_stop (route_id, stop_name, stop_sequence, is_transfer_point, has_shelter, latitude, longitude) VALUES
-(8, 'Pretoria Station', 1, TRUE, TRUE, -25.75800000, 28.19000000),
-(8, 'Marabastad', 2, TRUE, TRUE, -25.74500000, 28.18500000),
-(8, 'Boom Street', 3, FALSE, TRUE, -25.74000000, 28.18000000),
-(8, 'Hamilton Street', 4, FALSE, TRUE, -25.73500000, 28.17500000),
-(8, 'Civic Centre', 5, TRUE, TRUE, -25.73000000, 28.17000000),
-(8, 'Pretoria Art Museum', 6, FALSE, TRUE, -25.72500000, 28.16500000),
-(8, 'Union Buildings', 7, TRUE, TRUE, -25.72000000, 28.16000000),
-(8, 'Hermanstad Depot', 8, TRUE, TRUE, -25.71500000, 28.15500000);
+-- Junction table 
+-- For A1 (route id 1, stops 1-8)
+INSERT INTO trackerSR_stop_routes (stop_id, route_id, stop_sequence) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 4),
+(5, 1, 5),
+(6, 1, 6),
+(7, 1, 7),
+(8, 1, 8);
 
--- Junction table (Many-to-Many)
-INSERT INTO trackerSR_stop_routes (stop_id, route_id) VALUES
-(1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(8,1), -- A1
-(9,8),(10,8),(11,8),(12,8),(13,8),(14,8),(15,8),(16,8); -- T1
+-- For T1 (route id 8, stops 3 + 9-15)
+INSERT INTO trackerSR_stop_routes (stop_id, route_id, stop_sequence) VALUES
+(3, 8, 1),
+(9, 8, 2),
+(10, 8, 3),
+(11, 8, 4),
+(12, 8, 5),
+(13, 8, 6),
+(14, 8, 7),
+(15, 8, 8);
 
 -- Sample live buses
 INSERT INTO trackerSR_bus (route_id, current_latitude, current_longitude, eta, status) VALUES
-(1, -25.75000000, 28.19500000, '00:05:00', 'on_time'),
-(1, -25.77000000, 28.26000000, '00:12:00', 'on_time'),
-(8, -25.73500000, 28.17500000, '00:03:00', 'delayed');
+(1, -25.75000000, 28.19500000, '00:05:00'::interval, 'on_time'),
+(1, -25.77000000, 28.26000000, '00:12:00'::interval, 'on_time'),
+(8, -25.73500000, 28.17500000, '00:03:00'::interval, 'delayed');
 
 -- Sample schedules (A1 weekday)
 INSERT INTO trackerSR_schedules (route_id, direction, departure_time, weekday_type) VALUES
@@ -149,15 +189,14 @@ INSERT INTO trackerSR_schedules (route_id, direction, departure_time, weekday_ty
 (1, 'Inbound', '16:20:00', 'Weekday'),
 (1, 'Inbound', '16:40:00', 'Weekday');
 
--- Sample fares
+-- Sample fares (adjusted stop IDs for deduplication)
 INSERT INTO trackerSR_fares (route_id, from_stop_id, to_stop_id, fare_amount, fare_type) VALUES
 (1, 1, 8, 15.50, 'Cash'),
 (1, 1, 8, 12.50, 'Card'),
 (1, 1, 3, 8.00, 'Cash'),
-(8, 9, 16, 12.00, 'Cash');
+(8, 3, 15, 12.00, 'Cash');
 
--- 5. Views 
-
+-- Views 
 CREATE OR REPLACE VIEW trackerSR_active_routes AS
 SELECT route_number, route_name, origin, destination, operating_hours, frequency
 FROM trackerSR_route
@@ -165,11 +204,12 @@ WHERE status = 'Active'
 ORDER BY route_number;
 
 CREATE OR REPLACE VIEW trackerSR_route_details AS
-SELECT r.route_number, r.route_name, s.stop_name, s.stop_sequence,
+SELECT r.route_number, r.route_name, s.stop_name, sr.stop_sequence,
        s.is_transfer_point, s.has_shelter
 FROM trackerSR_route r
-JOIN trackerSR_stop s ON r.id = s.route_id
-ORDER BY r.route_number, s.stop_sequence;
+JOIN trackerSR_stop_routes sr ON r.id = sr.route_id
+JOIN trackerSR_stop s ON sr.stop_id = s.id
+ORDER BY r.route_number, sr.stop_sequence;
 
 CREATE OR REPLACE VIEW trackerSR_todays_schedule AS
 SELECT r.route_number, r.route_name, s.direction, s.departure_time
@@ -188,47 +228,3 @@ JOIN trackerSR_route r ON f.route_id = r.id
 JOIN trackerSR_stop fs ON f.from_stop_id = fs.id
 JOIN trackerSR_stop ts ON f.to_stop_id = ts.id
 ORDER BY r.route_number, f.fare_amount;
-
-/*CREATE DATABASE tshwane_busmate;
-USE tshwane_busmate;
-
-CREATE TABLE signups (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  full_name VARCHAR(100) NOT NULL,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role ENUM('commuter', 'driver', 'admin') NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE logins (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  full_name VARCHAR(100) NOT NULL,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role ENUM('commuter', 'driver', 'admin') NOT NULL,
-
-  -- Role-specific fields (nullable)
-  bus_card_no VARCHAR(50),     -- for commuters
-  driver_id VARCHAR(50),       -- for drivers
-  admin_id VARCHAR(50),        -- for admins
-
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-*/
-
-
--- only "missing" parts are with connecting the database to the server permanently along with Slo and Mo's parts. additionaly idk how to facilitate the Ai part
-
--- Test 1: Active routes
--- SELECT * FROM trackerSR_active_routes;
-
--- Test 2: Stops for A1
--- SELECT * FROM trackerSR_route_details WHERE route_number = 'A1';
-
--- Test 3: Today’s schedule
--- SELECT * FROM trackerSR_todays_schedule WHERE route_number = 'A1';
-
--- Test 4: Fares
--- SELECT * FROM trackerSR_fare_prices WHERE route_number = 'A1';
-
