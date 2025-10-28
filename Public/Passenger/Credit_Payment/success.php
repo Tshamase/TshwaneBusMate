@@ -135,7 +135,7 @@ session_start();
             <h2>Payment Successful!</h2>
             <p>Thank you for your payment. Your transaction has been processed successfully.<br>
                 Your credits will be updated shortly.</p>
-            <a href="Credit Wallet.php" class="back-button">
+            <a href="credit_wallet.html" class="back-button">
                 <i class="fas fa-arrow-left"></i> Back to Credit Wallet
             </a>
         </div>

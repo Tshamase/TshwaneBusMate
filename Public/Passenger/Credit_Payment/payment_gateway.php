@@ -1,17 +1,13 @@
 <?php
-// payment_gateway.php - Builds PayFast form for payment processing
-
-require 'PayFastIntegration.php';
 require 'db_payment.php';
+require_once 'vendor/autoload.php';
+require_once 'secrets.php';
 
 // Start session for user data
 session_start();
 
 // Check if user is logged in - redirect to credit wallet if not
-if (!isset($_SESSION['user'])) {
-    header("Location: credit_wallet.html");
-    exit();
-}
+// Working progress........
 
 // Function to sanitize input
 function sanitize_input($data)
@@ -75,55 +71,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // If no errors, build PayFast form
+    // If no errors, create Stripe checkout session
     if (empty($errors)) {
-        // PayFast configuration (use sandbox credentials)
-        $config = [
-            'merchant_id' => '10042793',            // sandbox merchant id
-            'merchant_key' => 'h84dovz8djy3j',      // sandbox merchant key
-            'passphrase'   => '',                    // optional passphrase
-            'sandbox'      => true
-        ];
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        header('Content-Type: application/json');
 
-        $pf = new PayFastIntegration($config);
+        $YOUR_DOMAIN = 'http://localhost/TshwaneBusMate/Public/Passenger/Credit_Payment';
 
-        // Generate unique payment ID
-        $m_payment_id = 'order_' . time() . '_' . rand(1000, 9999);
+        $checkout_session = \Stripe\Checkout\Session::create([
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'zar',
+                    'unit_amount' => $totalAmount * 100, // Amount in cents
+                    'product_data' => [
+                        'name' => $itemName,
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => $YOUR_DOMAIN . '/success.php',
+            'cancel_url' => $YOUR_DOMAIN . '/cancel.php',
+        ]);
 
-        // Store order in database
-        $userId = 1; // Assuming single user for now
-        $order_id = uniqid('order_');
-
-        $insertOrder = "INSERT INTO orders (order_id, m_payment_id, user_id, amount, item_name, transaction_type) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($insertOrder);
-        $stmt->bind_param("ssidss", $order_id, $m_payment_id, $userId, $totalAmount, $itemName, $action);
-        $stmt->execute();
-        $stmt->close();
-
-        // Build PayFast payload
-        $payload = [
-            'amount' => $totalAmount,
-            'item_name' => $itemName,
-            'm_payment_id' => $m_payment_id,
-            'name_first' => 'Test',
-            'name_last' => 'User',
-            'email_address' => 'customer@example.com', // Changed to avoid same account payment error
-            'return_url' => 'http://localhost/TshwaneBusMate/Public/Passenger/Credit_Payment/success.php',
-            'cancel_url' => 'http://localhost/TshwaneBusMate/Public/Passenger/Credit_Payment/cancel.php',
-            'notify_url' => 'http://localhost/TshwaneBusMate/Public/Passenger/Credit_Payment/notify.php', // Use ngrok URL in production
-        ];
-
-        // Build form data with signature
-        $formData = $pf->buildFormData($payload);
-
-        // Generate and output the redirect form with auto-submit
-        echo $pf->generateRedirectForm($formData, 'Proceed to PayFast');
-        echo '<script>document.getElementById("pf_payment_form").submit();</script>';
+        header("HTTP/1.1 303 See Other");
+        header("Location: " . $checkout_session->url);
         exit();
     }
 }
 
 // If GET request or errors, display the form
+
 if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
 ?>
     <!DOCTYPE html>
@@ -137,109 +115,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         <link rel="stylesheet" href="payment_gateway.css" />
-        <style>
-            /* Menu toggle icon */
-            .menu-toggle {
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                font-size: 20px;
-                color: #27ae60;
-                cursor: pointer;
-                z-index: 1000;
-            }
-
-            /* Sidebar navigation menu */
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -220px;
-                /* Hidden by default */
-                width: 180px;
-                height: 100vh;
-                background: #0d1b24;
-                padding: 20px 0;
-                transition: left 0.3s ease;
-                /* Smooth transition */
-                z-index: 999;
-                border-right: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            /* Show sidebar when active */
-            .sidebar.active {
-                left: 0;
-            }
-
-            /* Sidebar title */
-            .sidebar h2 {
-                color: #ffd700;
-                /* Title color */
-                font-style: italic;
-                text-align: center;
-                margin-bottom: 15px;
-                font-size: 1.2rem;
-            }
-
-            /* Sidebar list styling */
-            .sidebar ul {
-                list-style: none;
-            }
-
-            .sidebar ul li {
-                padding: 8px 12px;
-                /* Padding for list items */
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                /* Space between icon and text */
-                transition: background 0.3s ease;
-                font-size: 0.9rem;
-            }
-
-            /* Sidebar links */
-            .sidebar ul li a {
-                color: #fafafc;
-                /* Link color */
-                text-decoration: none;
-                /* Remove underline */
-                flex-grow: 1;
-                /* Allow link to grow */
-            }
-
-            /* Hover effect for sidebar items */
-            .sidebar ul li:hover {
-                background: rgba(255, 255, 255, 0.05);
-            }
-
-            .sidebar ul li:hover a {
-                color: #27ae60;
-            }
-
-            /* Package list styling */
-            #packageList {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .packageItem {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .packageItem select {
-                flex: 1;
-            }
-
-            .btn-remove {
-                flex-shrink: 0;
-            }
-        </style>
     </head>
 
     <body>
-        <!-- Page header -->
+
         <header>
             <div class="header-container">
                 <div class="logo">
@@ -252,40 +131,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                 </button>
             </div>
         </header>
-
-        <!-- Menu toggle icon 
-        <div class="menu-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
-        </div>-->
-
-        <!-- Sidebar navigation menu -->
-        <div class="sidebar">
-            <h2>TBM</h2>
-            <ul>
-                <li>
-                    <a href="../home.html"><i class="fa-solid fa-house"></i>Home</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-bus"></i>About</a>
-                </li>
-                <li>
-                    <a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a>
-                </li>
-                <li>
-                    <a href="credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a>
-                </li>
-            </ul>
-        </div>
-
         <main>
-            <!-- Left side: form for choosing action -->
             <div class="content-container">
                 <h2>Payment Gateway</h2>
 
-                <!-- Pass errors from query string to JavaScript for notification display -->
                 <script>
                     <?php
                     if (isset($_GET['errors']) && !empty($_GET['errors'])) {
@@ -307,7 +156,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                         </select>
                     </div>
 
-                    <!-- Reload fields -->
                     <div id="reloadFields" class="hidden">
                         <div class="form-group">
                             <label for="reloadAmount">Reload amount (ZAR)</label>
@@ -322,7 +170,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                         </div>
                     </div>
 
-                    <!-- Purchase fields -->
                     <div id="purchaseFields" class="hidden">
                         <div class="form-group">
                             <label>Select product(s)</label>
@@ -353,7 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                         </div>
                     </div>
 
-                    <!-- Invoice Summary -->
                     <div style="margin-top: 30px">
                         <a href="#" id="toggleInvoiceLink" class="toggle-link hidden">View invoice</a>
                         <div id="invoiceSummary" class="invoice hidden">
@@ -375,14 +221,28 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
             </div>
         </main>
 
-        <!-- Footer -->
         <footer>
             <div class="copyright">
                 Copyright &copy; 2025 City of Tshwane. All rights reserved.
             </div>
         </footer>
 
-        <!-- Notification Dialog -->
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Confirm Payment</h3>
+                </div>
+                <div class="modal-body">
+                    <pre id="confirmationMessage"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmCancel" class="btn-cancel">Cancel</button>
+                    <button id="confirmOk" class="btn-ok">Proceed</button>
+                </div>
+            </div>
+        </div>
+
         <div id="notificationDialog" class="notification-dialog">
             <div class="notification-content">
                 <span class="notification-close">&times;</span>
