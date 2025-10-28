@@ -1,5 +1,7 @@
 <?php
 require 'db_payment.php';
+require_once 'vendor/autoload.php';
+require_once 'secrets.php';
 
 // Start session for user data
 session_start();
@@ -69,8 +71,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // If no errors, build PayFast form
+    // If no errors, create Stripe checkout session
     if (empty($errors)) {
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        header('Content-Type: application/json');
+
+        $YOUR_DOMAIN = 'http://localhost/TshwaneBusMate/Public/Passenger/Credit_Payment';
+
+        $checkout_session = \Stripe\Checkout\Session::create([
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'zar',
+                    'unit_amount' => $totalAmount * 100, // Amount in cents
+                    'product_data' => [
+                        'name' => $itemName,
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => $YOUR_DOMAIN . '/success.php',
+            'cancel_url' => $YOUR_DOMAIN . '/cancel.php',
+        ]);
+
+        header("HTTP/1.1 303 See Other");
+        header("Location: " . $checkout_session->url);
         exit();
     }
 }
@@ -79,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
 ?>
-<!--
     <!DOCTYPE html>
     <html lang="en">
 
@@ -94,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
     </head>
 
     <body>
-       
+
         <header>
             <div class="header-container">
                 <div class="logo">
@@ -112,16 +136,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                 <h2>Payment Gateway</h2>
 
                 <script>
-                    
                     <?php
-                    /*
-                        if (isset($_GET['errors']) && !empty($_GET['errors'])) {
-                            $errors = json_decode($_GET['errors'], true);
-                            echo 'window.paymentErrors = ' . json_encode($errors) . ';';
-                        } else {
-                            echo 'window.paymentErrors = null;';
-                        }
-                    */
+                    if (isset($_GET['errors']) && !empty($_GET['errors'])) {
+                        $errors = json_decode($_GET['errors'], true);
+                        echo 'window.paymentErrors = ' . json_encode($errors) . ';';
+                    } else {
+                        echo 'window.paymentErrors = null;';
+                    }
                     ?>
                 </script>
 
@@ -206,9 +227,22 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
             </div>
         </footer>
 
-    <html>
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Confirm Payment</h3>
+                </div>
+                <div class="modal-body">
+                    <pre id="confirmationMessage"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmCancel" class="btn-cancel">Cancel</button>
+                    <button id="confirmOk" class="btn-ok">Proceed</button>
+                </div>
+            </div>
+        </div>
 
-    <body>
         <div id="notificationDialog" class="notification-dialog">
             <div class="notification-content">
                 <span class="notification-close">&times;</span>
@@ -239,6 +273,5 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
     </body>
 
     </html>
--->
 <?php
 }

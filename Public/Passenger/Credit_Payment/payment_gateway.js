@@ -416,8 +416,8 @@
       // Show processing notification
       showNotification("Processing your payment request...", "info");
 
-      // Redirect to working.html instead of submitting form
-      window.location.href = "working.html";
+      // Submit the form to payment_gateway.php
+      document.getElementById("invoicePayment").submit();
     };
 
     var handleCancel = function () {
