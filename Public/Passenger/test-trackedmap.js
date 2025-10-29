@@ -4,7 +4,7 @@
 const map = L.map('map').setView([-25.7479, 28.1888], 19);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19, // How far you can zoom in
+    maxZoom: 20, // How far you can zoom in
     attribution: '&copy; OpenStreetMap contributors' // Gives credit to OSM
 }).addTo(map);
 
@@ -59,7 +59,7 @@ function loadAndAnimate() {
         // --- Add the Bus Icon Marker ---
         const busIcon = L.icon({
             iconUrl: 'https://img.icons8.com/isometric/50/bus.png', // Bus image
-            iconSize: [35, 35],   // Width and height of the icon
+            iconSize: [55, 55],   // Width and height of the icon
             iconAnchor: [10, 15], // Where the icon "sits" on the map
             popupAnchor: [0, -40] // Where popups appear relative to the icon
         });
@@ -81,7 +81,7 @@ function loadAndAnimate() {
                 bus.setLatLng([data.latitude, data.longitude]);
 
                 // Optionally, recenter the map around the bus
-                map.setView([data.latitude, data.longitude], 13);
+                map.setView([data.latitude, data.longitude], 14);
             } catch (err) {
                 // If something goes wrong with parsing JSON
                 console.error("Bad JSON:", event.data, err);

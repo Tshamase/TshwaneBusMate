@@ -2,7 +2,7 @@
 const map = L.map('map').setView([-25.7479, 28.1888], 19);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    maxZoom: 20,
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
@@ -23,7 +23,7 @@ function loadRoutePoints() {
         // Add circular markers for each route point
         points.forEach((point, index) => {
             let color = 'blue';
-            let radius = 5;
+            let radius = 3;
             if (index === 0) { color = 'green'; radius = 6; }
             if (index === points.length - 1) { color = 'red'; radius = 6; }
 
@@ -35,7 +35,7 @@ function loadRoutePoints() {
         // Add the bus (driver) marker
         const busIcon = L.icon({
             iconUrl: 'https://img.icons8.com/isometric/50/bus.png',
-            iconSize: [35, 35],
+            iconSize: [50, 50],
             iconAnchor: [17, 17],
             popupAnchor: [0, -20]
         });
@@ -56,7 +56,7 @@ const ws = new WebSocket("wss://tshwanebusmate.onrender.com");
 
 ws.onopen = () => {
     console.log("Connected to server");
-    statusEl.textContent = "✅ Connected! Sending GPS data every 5 seconds...";
+    statusEl.textContent = "✅ Connected! Sending GPS data every 3 seconds...";
     
     setInterval(() => {
         if (navigator.geolocation) {
@@ -70,7 +70,8 @@ ws.onopen = () => {
 
                     if (driverMarker) {
                         driverMarker.setLatLng([data.latitude, data.longitude]);
-                        map.setView([data.latitude, data.longitude], 13);
+                        map.setView([data.latitude, data.longitude], 16
+                                   );
                     }
 
                     if (ws.readyState === WebSocket.OPEN) {
@@ -90,7 +91,7 @@ ws.onopen = () => {
             console.error("Geolocation not supported");
             statusEl.textContent = "❌ Geolocation not supported by this browser";
         }
-    }, 5000);
+    }, 3000);
 };
 
 ws.onclose = () => {
