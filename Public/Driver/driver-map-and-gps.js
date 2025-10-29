@@ -70,7 +70,7 @@ ws.onopen = () => {
 
                     if (driverMarker) {
                         driverMarker.setLatLng([data.latitude, data.longitude]);
-                        map.setView([data.latitude, data.longitude], 16);
+                        map.setView([data.latitude, data.longitude], 15);
                     }
 
                     if (ws.readyState === WebSocket.OPEN) {
