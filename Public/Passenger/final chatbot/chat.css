@@ -1,0 +1,187 @@
+/* Colors for chatbot design */
+:root {
+    --grey: #f5f5f5;
+    --green: #36df44;
+    --black: #1a1a1a;
+}
+
+/* Style for the chat window */
+.chat-window {
+    display: none;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: white;
+    border-radius: 20px;
+    position: absolute;
+    z-index: 999;
+    bottom: 60px;
+    right: 20px;
+    height: 600px;
+    width: 360px;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+body.chat-open .chat-window {
+    display: flex;
+}
+
+/* Floating icon to open the chatbot */
+.chat-button {
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    z-index: 998;
+    background-color: var(--black);
+    color: white;
+    height: 80px;
+    width: 80px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+        width: 50px;
+    }
+
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+}
+
+/* Style the chat window, the main container for the chatbot interface */
+.chat-window {
+    * {
+        font-family: "Raleway", sans-serif;
+    }
+
+    /* Close button at the top of the chat window */
+    .close {
+        border: none;
+        padding: 8px 0;
+        background-color: var(--black);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        cursor: pointer;
+    }
+
+    /* Chat area where messages are displayed */
+    .chat {
+        flex: 1;
+        padding: 0 8px;
+        overflow-y: scroll;
+
+        /* Style for individual messages */
+        p {
+            border-radius: 20px;
+            width: 80%;
+            margin: 8px 0;
+            font-size: 16px;
+            padding: 16px;
+        }
+
+        /* Different styles for messages from the model and user */
+        div.model {
+            p {
+                background-color: var(--grey);
+            }
+        }
+
+        /* User messages are aligned to the right */
+        div.user {
+            display: flex;
+            justify-content: flex-end;
+
+            p {
+                background-color: var(--green);
+                color: white;
+            }
+        }
+
+        /* FAQ messages */
+        div.faq-message {
+            p {
+                background-color: var(--grey);
+                cursor: pointer;
+                color: var(--black);
+                width: 90%;
+                font-size: 14px;
+                border: 1px solid var(--black);
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+            }
+        }
+
+        /* Error messages style */
+        div.error {
+            p {
+                font-size: 14px;
+                text-align: center;
+                color: red;
+            }
+        }
+    }
+
+    /* Input area at the bottom for user to type messages */
+    .input-area {
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 8px;
+        border-top: 1px solid lightgray;
+
+        /* Input field for typing messages */
+        input {
+            height: 40px;
+            flex: 1;
+            border: none;
+            background-color: var(--grey);
+            border-radius: 20px;
+            padding-left: 20px;
+            font-size: 16px;
+        }
+
+        /* Send button to submit messages */
+        button {
+            height: 40px;
+            width: 40px;
+            border-radius: 100%;
+            border: none;
+            margin-left: 12px;
+            background-color: var(--green);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+
+            /* Icon inside the button */
+            img {
+                width: 18px;
+            }
+
+            /* Hover effect for the button */
+            &:hover {
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            }
+        }
+    }
+}
+
+/* Loader animation for when the model is processing */
+.loader {
+    width: 40px;
+    opacity: 0.4;
+    aspect-ratio: 4;
+    background: radial-gradient(circle closest-side, #000000 90%, #0000) 0/calc(100%/3) 100% space;
+    clip-path: inset(0 100% 0 0);
+    animation: l1 1.5s steps(4) infinite;
+}
+@keyframes l1 {
+    to {
+        clip-path: inset(0 -34% 0 0);
+    }
+}
