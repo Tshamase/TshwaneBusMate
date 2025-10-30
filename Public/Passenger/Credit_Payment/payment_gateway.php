@@ -115,6 +115,69 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         <link rel="stylesheet" href="payment_gateway.css" />
+        <style>
+            .menu-toggle {
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                font-size: 20px;
+                color: #27ae60;
+                cursor: pointer;
+                z-index: 1000;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -220px;
+                width: 180px;
+                height: 100vh;
+                background: #0d1b24;
+                padding: 20px 0;
+                transition: left 0.3s ease;
+                z-index: 999;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar h2 {
+                color: #ffd700;
+                font-style: italic;
+                text-align: center;
+                margin-bottom: 15px;
+                font-size: 1.2rem;
+            }
+
+            .sidebar ul {
+                list-style: none;
+            }
+
+            .sidebar ul li {
+                padding: 8px 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background 0.3s ease;
+                font-size: 0.9rem;
+            }
+
+            .sidebar ul li a {
+                color: #fafafc;
+                text-decoration: none;
+                flex-grow: 1;
+            }
+
+            .sidebar ul li:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .sidebar ul li:hover a {
+                color: #27ae60;
+            }
+        </style>
     </head>
 
     <body>
@@ -124,11 +187,20 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || !empty($errors)) {
                 <div class="logo">
                     <h1>TshwaneBusMate</h1>
                 </div>
-                <button
-                    class="back-button"
-                    onclick="window.location.href='credit_wallet.html'">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
+                <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+
+                <div class="sidebar">
+                    <h2>TBM</h2>
+                    <ul>
+                        <li><a href="../home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+                        <li><a href="#"><i class="fa-solid fa-bus"></i>About</a></li>
+                        <li><a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a></li>
+                        <li><a href="Credit_Payment/credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a></li>
+                        <li><a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a></li>
+                    </ul>
+                </div>
             </div>
         </header>
         <main>
