@@ -339,7 +339,7 @@ $name = $_SESSION["user"] ?? "fullname";
       <li><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
       <li><a href="#"><i class="fa-solid fa-bus"></i>About</a></li>
       <li><a href="routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a></li>
-      <li><a href="PayGateway.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a></li>
+      <li><a href="credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a></li>
       <li><a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a></li>
     </ul>
   </div>
