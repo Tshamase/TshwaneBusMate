@@ -1,0 +1,48 @@
+.signup-card {
+    max-width: 450px;
+    margin: 160px auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    padding: 30px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.signup-card h2 {
+    font-size: 28px;
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.signup-card p.subtitle {
+    font-size: 20px;
+    color: #bbb;
+    margin-bottom: 25px;
+}
+
+.signup-card label {
+    display: block;
+    text-align: left;
+    margin: 15px 0 8px;
+    font-weight: bold;
+    color: #f0f0f0;
+}
+
+.signup-card p a {
+    color: yellow;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-card p a:hover {
+    text-decoration: underline;
+}
+
+.general-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
