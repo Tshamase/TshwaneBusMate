@@ -117,14 +117,20 @@
         <div class="header-container">
           <div class="logo">
             <h1>TshwaneBusMate</h1>
-          </div>
-          <button
-            class="back-button"
-            onclick="window.location.href='credit_wallet.html'"
-          >
-            <i class="fas fa-arrow-left"></i> Back
-          </button>
-        </div>
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+
+                <div class="sidebar">
+                    <h2>TBM</h2>
+                    <ul>
+                        <li><a href="../home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+                        <li><a href="#"><i class="fa-solid fa-bus"></i>About</a></li>
+                        <li><a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a></li>
+                        <li><a href="../Credit_Payment/credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a></li>
+                        <li><a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a></li>
+                    </ul>
+                </div>
       </header>
 
       <main>
@@ -254,5 +260,22 @@
     </div>
 
     <script src="payment_gateway.js"></script>
+
+     <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside
+        window.addEventListener('click', function(e) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+
   </body>
 </html>

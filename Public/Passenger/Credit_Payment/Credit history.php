@@ -3,7 +3,7 @@ session_start();
 include 'db_payment.php';
 
 // Check if user is logged in
-    // Will perform operation in the future.
+// Will perform operation in the future.
 
 //$username = $_SESSION['user'];
 $userId = 1; // Example user ID - in production, get from session
@@ -98,25 +98,66 @@ $result = $stmt->get_result();
             letter-spacing: 1px;
         }
 
-        .back-button {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+        .menu-toggle {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-size: 20px;
+            color: #27ae60;
+            cursor: pointer;
+            z-index: 1000;
         }
 
-        .back-button:hover {
-            transform: translateY(-50%) translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -220px;
+            width: 180px;
+            height: 100vh;
+            background: #0d1b24;
+            padding: 20px 0;
+            transition: left 0.3s ease;
+            z-index: 999;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar h2 {
+            color: #ffd700;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar ul li a {
+            color: #fafafc;
+            text-decoration: none;
+            flex-grow: 1;
+        }
+
+        .sidebar ul li:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar ul li:hover a {
+            color: #27ae60;
         }
 
         main {
@@ -304,9 +345,20 @@ $result = $stmt->get_result();
 <body>
     <header>
         <h1>TshwaneBusMate</h1>
-        <a href="credit_wallet.html" class="back-button">
-            <i class="fas fa-arrow-left"></i> Back
-        </a>
+        <div class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <div class="sidebar">
+            <h2>TBM</h2>
+            <ul>
+                <li><a href="../home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+                <li><a href="#"><i class="fa-solid fa-bus"></i>About</a></li>
+                <li><a href="../routes and tracking.html"><i class="fa-solid fa-map-location"></i>Bus Routes</a></li>
+                <li><a href="credit_wallet.html"><i class="fa-solid fa-id-card-clip"></i>Bus Card</a></li>
+                <li><a href="#"><i class="fa-solid fa-comments"></i>Inquiries</a></li>
+            </ul>
+        </div>
     </header>
 
     <main>
@@ -375,6 +427,22 @@ $result = $stmt->get_result();
     <footer>
         <div class="copyright">Copyright &copy; 2025 City of Tshwane. All rights reserved.</div>
     </footer>
+
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside
+        window.addEventListener('click', function(e) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 
 </html>
