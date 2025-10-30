@@ -754,7 +754,9 @@
         console.log("Service Worker registration failed:", error);
       });
     }
-
+ function goToPage(page) {
+      window.location.href = '/Passenger/' + page;
+    }
     function toggleSidebar() {
       document.querySelector('.wrapper').classList.toggle('active');
     }
