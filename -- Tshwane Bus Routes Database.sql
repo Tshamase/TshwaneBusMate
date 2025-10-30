@@ -505,8 +505,9 @@ FROM
     JOIN trackerSR_stop ts ON f.to_stop_id = ts.id
 ORDER BY r.route_number, f.fare_amount;
 
+
 -- =====================================================
--- CREDIT PAYMENT SYSTEM SQL CODE
+-- Mo's CREDIT PAYMENT SYSTEM SQL CODE
 CREATE DATABASE IF NOT EXISTS payments_db;
 
 -- Orders table for payment tracking
@@ -551,4 +552,7 @@ ORDER BY id DESC
 LIMIT 1;
 
 -- Query to get transaction history with filters
+
 SELECT * FROM transactions WHERE user_id = ?;
+
+-- =======================================================================
