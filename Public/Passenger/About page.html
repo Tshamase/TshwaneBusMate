@@ -6,31 +6,310 @@
     <title>Tswanebusmate - About</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="LinkRn.css">
+    <style> 
+        .auth-buttons {
+            position: static;
+            transform: none;
+        }
+        
+        .auth-buttons button {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+        .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .auth-buttons button {
+        padding: 8px 20px;
+        border-radius: 25px;
+        border: none;
+        font-weight: bold;
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    
+    .login-btn {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+    }
+    
+    .login-btn:hover {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+    }
+    
+    .signup-btn {
+        background: linear-gradient(135deg, #FFD700, #FFC300);
+        color: #222;
+    }
+    
+    .signup-btn:hover {
+        background: linear-gradient(135deg, #FFC300, #FFD700);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
+     .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        background: #0d1b24;
+        padding: 30px 0;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        border-right: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+    }
+
+    .wrapper.active .sidebar { 
+        left: 0; 
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+    
+    .wrapper.active .sidebar-overlay {
+        display: block;
+    }
+
+    .sidebar h2 {
+        color: #FFD700;
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
+    
+    .sidebar ul { 
+        list-style: none; 
+    }
+    
+    .sidebar ul li {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: background 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .sidebar ul li a {
+        color: #fafafc;
+        text-decoration: none;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+    
+    .sidebar ul li:hover { 
+        background: rgba(255,255,255,0.05); 
+    }
+    
+    .sidebar ul li:hover a { 
+        color: #27ae60; 
+    }
+    
+    .sidebar ul li i {
+        width: 20px;
+    }
+
+    /* Extra small devices */
+    @media (max-width: 360px) {
+        .sidebar {
+            width: 100vw;
+            left: -100vw;
+        }
+        
+        .welcome-card {
+            padding: 20px 12px;
+        }
+        
+        .main-btn button {
+            padding: 10px 25px;
+        }
+        
+        .map-wrapper iframe {
+            height: 250px;
+        }
+         .sidebar {
+            width: 85vw;
+            left: -85vw;
+        }
+    }
+     nav.header-bar .logo {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+     nav.header-bar .logo h1 {
+        font-size: clamp(1.2rem, 4vw, 2.2rem);
+        font-weight: 800;
+        background: linear-gradient(to right, #fff 51%, #FFD700 49%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    nav.header-bar {
+        width: 100%;
+        height: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        color: white;
+        background: linear-gradient(135deg, #000, #0d1b24);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: fixed;
+        top: 0;
+        z-index: 100;
+    }
+     .wrapper.active .sidebar-overlay {
+        display: block;
+    }
+     .wrapper.active .sidebar { 
+        left: 0; 
+    }
+     .menu-toggle:hover {
+        background: rgba(39, 174, 96, 0.2);
+        transform: scale(1.1);
+    }
+    .menu-toggle {
+        position: fixed;
+        top: 25px;
+        left: 20px;
+        font-size: 24px;
+        color: #27ae60;
+        cursor: pointer;
+        z-index: 1001;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 100px auto 0;
+        padding: 20px;
+        width: 95%;
+        background: rgba(255,255,255,0.07);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        padding: 40px 30px;
+        text-align: center;
+        margin-bottom: 35px;
+        border: 1px solid rgba(255,255,255,0.1);
+        animation: fadeInDown 1s;
+    }
+
+    .welcome-card {
+        background: rgba(255,255,255,0.07);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        padding: 40px 30px;
+        text-align: center;
+        margin-bottom: 35px;
+        border: 1px solid rgba(255,255,255,0.1);
+        animation: fadeInDown 1s;
+    }
+    
+    .welcome-card h1 {
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        color: #27F531;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-card h2 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        margin: 10px 0;
+    }
+    
+    .welcome-card h2 span {
+        color: #FFD700;
+    }
+    
+    .welcome-card p {
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        margin: 15px 0 25px 0;
+        line-height: 1.8;
+    }
+    .routes_btn {
+        padding: 10px 25px;
+        background: #27ae60;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .dropdown-content .routes_btn:hover {
+        background-color: #1edc3d;
+    }
+    .dropdown-content{ 
+        text-align: center; 
+    }
+    .main-btn button {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 35px;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 600;
+    }
+        </style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <h1>Tswanebusmate</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#" class="active">About</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <div class="wrapper">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <div class="sidebar">
+      <h2>TBM</h2>
+      <ul>
+        <li><a href="/Passenger/home.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="/Passenger/About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
+        <li><a href="/Passenger/Payment Gate.php"><i class="fa-solid fa-credit-card"></i> Bus card</a></li>
+      </ul>
+    </div>
+    <nav class="header-bar">
+      <div class="logo">
+        <h1>TSHWANE<span>BUSMATE</span></h1>
+      </div>
+      <div class="auth-buttons">
+        <a href="/Passenger/login.html" style="text-decoration:none;">
+          <button class="login-btn">Log In</button>
+        </a>
+        <a href="/Passenger/signup.php" style="text-decoration:none;">
+          <button class="signup-btn">Sign Up</button>
+        </a>
+      </div>
+    </nav>
 
     <section class="hero">
         <div class="hero-content">
             <h2>Revolutionizing Public Transport in Tshwane</h2>
             <p>Making bus travel smarter, safer, and more efficient for everyone</p>
-            <a href="#" class="cta-button">Discover Our Features</a>
-        </div>
+          
     </section>
 
     <div class="container">
@@ -144,12 +423,12 @@
                     </div>
                 </div>
                 
-                <!-- Charma -->
+                <!-- Tshamase -->
                 <div class="team-member">
                     <div class="member-img">
                     </div>
                     <div class="member-info">
-                        <h3>Charma</h3>
+                        <h3>Tshamase</h3>
                         <span class="role">Networks Specialist</span>
                         <p>Created and hosts the server, handles the connection of the backend and frontend</p>
                     </div>
@@ -202,6 +481,29 @@
                 observer.observe(member);
             });
         });
+        if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+      .then(registration => {
+        console.log("Service Worker registered with scope:", registration.scope);
+      })
+      .catch(error => {
+        console.log("Service Worker registration failed:", error);
+      });
+    }
+
+    function toggleSidebar() {
+      document.querySelector('.wrapper').classList.toggle('active');
+    }
+
+    document.querySelectorAll('.dropdown input[type="checkbox"]').forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          document.querySelectorAll('.dropdown input[type="checkbox"]').forEach(function(other) {
+            if (other !== checkbox) other.checked = false;
+          });
+        }
+      });
+    });
     </script>
 </body>
 </html>
