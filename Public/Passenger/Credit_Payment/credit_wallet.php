@@ -2,10 +2,13 @@
 session_start();
 
 // Check if user is logged in - redirect to login if not
-  // Wil perfom operations in the future.
+if (!isset($_SESSION['user_id'])) {
+  header('Location: ../../php_app/SignupAndLogin/login.php');
+  exit();
+}
 
 include 'db_payment.php';
-$//userId = $_SESSION['user']['id'] ?? 1; // Get user ID from session
+$userId = $_SESSION['user_id']; // Get user ID from session
 
 // Get the latest balance for the user
 $query = "SELECT balance FROM transactions WHERE user_id = ? ORDER BY id DESC LIMIT 1";

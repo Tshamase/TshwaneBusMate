@@ -3,10 +3,12 @@ session_start();
 include 'db_payment.php';
 
 // Check if user is logged in
-// Will perform operation in the future.
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../php_app/SignupAndLogin/login.php');
+    exit();
+}
 
-//$username = $_SESSION['user'];
-$userId = 1; // Example user ID - in production, get from session
+$userId = $_SESSION['user_id']; // Get user ID from session
 
 // Handle search and filters
 $search = $_POST['search'] ?? '';

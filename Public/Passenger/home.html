@@ -846,7 +846,9 @@
       <ul>
         <li><a href="/Passenger/home.html"><i class="fa-solid fa-house"></i> Home</a></li>
         <li><a href="/Passenger/About page.html"><i class="fa-solid fa-bus"></i> About</a></li>
-        <li><a href="/Passenger/Credit_Payment/payment_gateway.html"><i class="fa-solid fa-credit-card"></i> Bus card</a></li>
+        <?php if(isset($_SESSION['user_id'])): ?>
+        <li><a href="/Passenger/Credit_Payment/credit_wallet.html"><i class="fa-solid fa-credit-card"></i> Bus card</a></li>
+        <?php endif; ?>
       </ul>
     </div>
 
