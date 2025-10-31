@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - TshwaneBusMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Admin Dashboard</h1>
+        <div class="search-bar">
+            <input id="searchInput" type="text" placeholder="search...">
+        </div>
+    </header>
+
+    <!--Message shown when no search results match-->
+    <div id="noResults" style="display: none; text-align: center; margin-top: 20px; color: #666;">
+        No results
+    </div>
+
+    <!--Grid layout for dashboard cards with different management sections-->
+    <div class="dashboard-grid">
+        <div class="dashboard-card user-card">
+            <i class="fas fa-users card-icon"></i>
+            <h3>User Management</h3>
+            <p>Manage system users</p>
+            <a href="user_management.php" class="btn">Manage Users</a>
+        </div>
+
+        <div class="dashboard-card routes-card">
+            <i class="fas fa-bus card-icon"></i>
+            <h3>Bus Routes</h3>
+            <p>Manage bus routes and schedules</p>
+            <a href="route_management.php" class="btn">Manage Routes</a>
+        </div>
+
+        <div class="dashboard-card reports-card">
+            <i class="fas fa-chart-line card-icon"></i>
+            <h3>Reports</h3>
+            <p>View system reports</p>
+            <a href="reports.php" class="btn">View Reports</a>
+        </div>
+
+        <div class="dashboard-card settings-card">
+            <i class="fas fa-cogs card-icon"></i>
+            <h3>Settings</h3>
+            <p>System configuration</p>
+            <a href="settings.php" class="btn">System Settings</a>
+        </div>
+    </div>
+
+    <!--Centered logout button at bottom of page-->
+    <div style="text-align: center; margin-top: 10px;">
+        <a href="logout.php" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
