@@ -1,47 +1,64 @@
-# Base image
+# --------------------------------------------------------------
+# 1. Base image (Ubuntu 22.04)
+# --------------------------------------------------------------
 FROM ubuntu:22.04
 
-# Prevent timezone prompts
+# Prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
-    nodejs npm\
-    php php-cli php-fpm php-mysql \
-    supervisor \
-    && apt-get clean\
-    && rm -rf /var/lib/apt/lists/*
+# --------------------------------------------------------------
+# 2. Install ALL system packages in ONE layer (caching)
+# --------------------------------------------------------------
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 python3-pip python3-venv \
+        nodejs npm \
+        php php-cli php-fpm php-mysql \
+        supervisor \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Create working directory
+# --------------------------------------------------------------
+# 3. Create app layout (helps caching)
+# --------------------------------------------------------------
 WORKDIR /app
 
-# Copy everything into container
-COPY . /app
+# Copy ONLY the files we need for each service (order matters for cache)
+COPY django_app/requirements.txt   /app/django_app/
+COPY node_app/package*.json        /app/node_app/
+COPY supervisord.conf             /etc/supervisor/conf.d/supervisord.conf
 
-# -----------------------------
-# Install dependencies
-# -----------------------------
-
-# Django dependencies
+# --------------------------------------------------------------
+# 4. Install Python deps (cached if requirements.txt unchanged)
+# --------------------------------------------------------------
 WORKDIR /app/django_app
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Node dependencies
+# --------------------------------------------------------------
+# 5. Install Node deps (cached if package*.json unchanged)
+# --------------------------------------------------------------
 WORKDIR /app/node_app
 RUN npm install
 
-# -----------------------------
-# Configure Supervisor
-# -----------------------------
+# --------------------------------------------------------------
+# 6. Copy the rest of the code (after deps → cache stays)
+# --------------------------------------------------------------
 WORKDIR /app
-RUN mkdir -p /etc/supervisor/conf.d
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY django_app/   /app/django_app/
+COPY node_app/     /app/node_app/
+COPY php_app/      /app/php_app/        
 
-# Expose ports for Render
+# --------------------------------------------------------------
+# 7. Supervisor config – make sure it points to the right dirs
+# --------------------------------------------------------------
+# (supervisord.conf is already copied above)
+
+# --------------------------------------------------------------
+# 8. Expose ports (Render will forward only ONE – we expose all for local)
+# --------------------------------------------------------------
 EXPOSE 8000 3000 8080
 
-# Default command
+# --------------------------------------------------------------
+# 9. Start everything with Supervisor
+# --------------------------------------------------------------
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
