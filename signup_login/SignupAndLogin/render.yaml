@@ -1,0 +1,44 @@
+services:
+  # Django Backend
+  - type: web
+    name: django-backend
+    env: python
+    buildCommand: ./Dockerfile.django
+    startCommand: python manage.py runserver 0.0.0.0:8000
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bus-tracker-db
+          property: connectionString
+    plan: free
+
+  # Node.js Backend
+  - type: web
+    name: nodejs-backend
+    env: node
+    buildCommand: ./Dockerfile.node
+    startCommand: node server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bus-tracker-db
+          property: connectionString
+    plan: free
+
+  # PHP Backend
+  - type: web
+    name: php-backend
+    env: php
+    buildCommand: ./Dockerfile.php
+    startCommand: apache2-foreground
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bus-tracker-db
+          property: connectionString
+    plan: free
+
+  # Shared Database
+  - type: postgres
+    name: bus-tracker-db
+    plan: free
